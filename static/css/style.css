@@ -1,0 +1,24 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --navbar-bg: #333;
+    --logo-color: #fff6600;
+    --text-color: #212528;
+    --nav-text: #f2f2f2;
+    --body-color: #ccc;
+    --accordion-tab: #666666;
+    --maroon-koto: #930000
+
+
+
+}
+
+body {
+    color: var(--text-color);
+}
