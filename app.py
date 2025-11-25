@@ -1,12 +1,11 @@
 import os
-from flask import (
-    Flask, flash, render_template,
-    redirect, request, session, url_for, abort)
 from datetime import datetime, timedelta
+
+from bson.objectid import ObjectId
+from flask import abort, flash, redirect, render_template, request, session, url_for
 from flask_pymongo import PyMongo
 from flask_wtf import CSRFProtect
-from bson.objectid import ObjectId
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Load local environment variables for dev if present
 if os.path.exists("env.py"):
@@ -76,7 +75,9 @@ def get_current_user():
 
 @app.context_processor
 def inject_user_context():
-    """Provide common user flags to all templates without direct DB calls in Jinja."""
+    """
+    Provide common user flags to all templates without direct DB calls in Jinja.
+    """
     user_doc = get_current_user()
     return {
         "current_user": user_doc,
@@ -97,7 +98,8 @@ def get_welcome():
 @app.route("/my_tasks")
 def my_tasks():
     """
-    Show only the tasks created by the logged-in user. Supports optional category filtering via ?category=<name>.
+    Show only the tasks created by the logged-in user. Supports optional
+    category filtering via ?category=<name>.
     """
     user = session.get("user")
     if not user:
@@ -121,7 +123,11 @@ def my_tasks():
         rag_class = ""
         due_raw = task.get("due_date")
         try:
-            due_dt = datetime.strptime(due_raw, "%Y-%m-%d").date() if due_raw else None
+            due_dt = (
+                datetime.strptime(due_raw, "%Y-%m-%d").date()
+                if due_raw
+                else None
+            )
         except Exception:
             due_dt = None
 
@@ -225,10 +231,12 @@ def login():
                     {"$set": updates}
                 )
                 if freeze:
-                    flash("Account frozen after too many failed attempts. Contact a superadmin.")
-                else:
-                    flash("Incorrect Username and/or Password")
-                return redirect(url_for("login"))
+                flash(
+                    "Account frozen after too many failed attempts. Contact a superadmin."
+                )
+            else:
+                flash("Incorrect Username and/or Password")
+            return redirect(url_for("login"))
 
         else:
             # username doesn't exist
@@ -314,7 +322,9 @@ def delete_task(task_id):
         abort(404)
 
     # Only owner or superadmin can delete
-    if not is_superadmin(user_doc) and task.get("created_by") != user_doc["username"]:
+    if not is_superadmin(user_doc) and task.get(
+        "created_by"
+    ) != user_doc["username"]:
         abort(403)
 
     mongo.db.tasks.delete_one({"_id": ObjectId(task_id)})
@@ -477,13 +487,16 @@ def reset_password(token):
             return redirect(url_for("reset_password", token=token))
 
         mongo.db.users.update_one(
-            {"_id": user["_id"]},
-            {"$set": {
-                "password": generate_password_hash(password),
-                "failed_logins": 0,
-                "is_frozen": False
+            {
+                "_id": user["_id"]
             },
-                "$unset": {"reset_token": "", "reset_expires": ""}
+            {
+                "$set": {
+                    "password": generate_password_hash(password),
+                    "failed_logins": 0,
+                    "is_frozen": False,
+                },
+                "$unset": {"reset_token": "", "reset_expires": ""},
             }
         )
         flash("Password updated. Please log in.")
