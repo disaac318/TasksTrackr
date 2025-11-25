@@ -35,6 +35,13 @@ def format_date(value, in_fmt="%Y-%m-%d", out_fmt="%d-%m-%Y"):
 
 
 @app.route("/")
+@app.route("/get_welcome")
+def GET_welcome():
+        return render_template("welcome.html")
+
+
+
+@app.route("/")
 @app.route("/get_tasks")
 def get_tasks():
     tasks = list(
