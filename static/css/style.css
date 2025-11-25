@@ -57,6 +57,19 @@ footer {
     margin-top: -10px;
 }
 
+.btn-task-theme {
+    background-color: #db0000;
+    color: #fff;
+    border-color: #db0000;
+}
+
+.btn-task-theme:hover,
+.btn-task-theme:focus {
+    background-color: #b30000;
+    border-color: #b30000;
+    color: #fff;
+}
+
 .navbar-toggler .navbar-icon-close {
     display: none;
 }
