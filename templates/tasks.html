@@ -8,7 +8,7 @@
 
 
 <div class="accordion"
-    id="accordionExample">
+    id="accordionTasks">
 
     {% for task in tasks %}
     <!-- Accordion item -->
@@ -36,19 +36,22 @@
 
                 <!-- Edit & Delete buttons -->
                 <div class="d-flex align-items-start gap-4 me-4">
-                    <button class="btn btn-warning btn-sm d-inline-flex align-items-center"
-                        type="button"
-                        disabled
-                        title="Edit action not wired yet">
+                    <a href="{{ url_for('edit_task', task_id=task._id) }}"
+                        class="btn btn-warning btn-sm d-inline-flex align-items-center">
                         <i class="bi bi-pencil"></i>
-                    </button>
+                    </a>
 
-                    <button class="btn btn-danger btn-sm d-inline-flex align-items-center"
-                        type="button"
-                        disabled
-                        title="Delete action not wired yet">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                    <form action="{{ url_for('delete_task', task_id=task._id) }}"
+                        method="POST"
+                        class="d-inline-flex">
+                        <input type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}">
+                        <button type="submit"
+                            class="btn btn-danger btn-sm d-inline-flex align-items-center">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
                 </div>
 
 
@@ -59,7 +62,7 @@
         <div id="collapse{{ loop.index }}"
             class="accordion-collapse collapse"
             aria-labelledby="heading{{ loop.index }}"
-            data-bs-parent="#accordionExample">
+            data-bs-parent="#accordionTasks">
             <div class="accordion-body">
                 <strong>{{ task.category_name }}</strong>
                 <p>{{ task.task_description }}</p>
