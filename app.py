@@ -71,6 +71,26 @@ def my_tasks():
     )
     categories = list(mongo.db.categories.find().sort("category_name", 1))
 
+    # Annotate tasks with RAG status based on due_date proximity.
+    today = datetime.today().date()
+    for task in tasks:
+        rag_class = ""
+        due_raw = task.get("due_date")
+        try:
+            due_dt = datetime.strptime(due_raw, "%Y-%m-%d").date() if due_raw else None
+        except Exception:
+            due_dt = None
+
+        if due_dt:
+            days_until_due = (due_dt - today).days
+            if days_until_due <= 0:
+                rag_class = "rag-red"
+            elif days_until_due <= 2:
+                rag_class = "rag-amber"
+            else:
+                rag_class = "rag-green"
+        task["rag_class"] = rag_class
+
     return render_template(
         "my_tasks.html",
         tasks=tasks,

@@ -15,6 +15,9 @@
     --accordion-tab: #666666;
     --maroon-koto: #930000;
     --navbar-height: 64px;
+    --rag-red: #e03131;
+    --rag-amber: #f4a100;
+    --rag-green: #2f9e44;
 
 
 }
@@ -50,6 +53,10 @@ footer {
      font-size: 1.1rem !important;
 }
 
+.heading-tight {
+    margin-top: -10px;
+}
+
 .navbar-toggler .navbar-icon-close {
     display: none;
 }
@@ -60,6 +67,17 @@ footer {
 
 .navbar-toggler[aria-expanded="true"] .navbar-icon-close {
     display: inline-block;
+}
+
+/* On small screens, let the navbar flow normally so expanded menus don't cover content */
+@media (max-width: 767.98px) {
+    body {
+        padding-top: 0;
+    }
+
+    .navbar {
+        position: static !important;
+    }
 }
 
 
@@ -101,6 +119,50 @@ footer {
     border-radius: 6px !important;
     overflow: hidden;
     margin-bottom: 10px;
+}
+
+/* RAG highlighting for tasks */
+.accordion-item.rag-red {
+    border-color: var(--rag-red) !important;
+}
+
+.accordion-item.rag-red .accordion-button {
+    border-left: 6px solid var(--rag-red);
+    background-color: #fff5f5;
+}
+
+.accordion-item.rag-amber {
+    border-color: var(--rag-amber) !important;
+}
+
+.accordion-item.rag-amber .accordion-button {
+    border-left: 6px solid var(--rag-amber);
+    background-color: #fff9eb;
+}
+
+.accordion-item.rag-green {
+    border-color: var(--rag-green) !important;
+}
+
+.accordion-item.rag-green .accordion-button {
+    border-left: 6px solid var(--rag-green);
+    background-color: #f3fff6;
+}
+
+.rag-legend {
+    padding: 0.4rem 0.75rem;
+}
+
+.rag-red-border {
+    border-color: var(--rag-red) !important;
+}
+
+.rag-amber-border {
+    border-color: var(--rag-amber) !important;
+}
+
+.rag-green-border {
+    border-color: var(--rag-green) !important;
 }
 
 /* General tooltip override */

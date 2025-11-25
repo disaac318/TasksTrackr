@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="container text-center py-3">
-    <h1 class="taskTheme"><strong>Good Morning, {{ session.user}}!</strong></h1>
+    <h1 class="taskTheme heading-tight"><strong>Good Morning, {{ session.user}}!</strong></h1>
     <h3>You Have {{ tasks|length }} Tasks</h3>
 </div>
 
@@ -40,7 +40,7 @@
     {% for task in tasks %}
     <!-- Accordion item -->
     {% if session.user|lower == task.created_by|lower %}
-    <div class="accordion-item shadow-sm">
+    <div class="accordion-item shadow-sm {{ task.rag_class }}">
         <h2 class="accordion-header"
             id="heading{{ loop.index }}">
             <div class="d-flex align-items-center justify-content-between w-100">
@@ -101,6 +101,14 @@
 
     {% endfor %}
 
+    </div>
+</div>
+
+<div class="container mt-3 text-center">
+    <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 small w-100">
+        <span class="badge rounded-pill bg-light text-dark border rag-legend rag-red-border">Due / Overdue</span>
+        <span class="badge rounded-pill bg-light text-dark border rag-legend rag-amber-border">Due in 1-2 days</span>
+        <span class="badge rounded-pill bg-light text-dark border rag-legend rag-green-border">Due in 3+ days</span>
     </div>
 </div>
 
