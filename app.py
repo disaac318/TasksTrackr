@@ -44,6 +44,31 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        # check if username already exists in db
+        existing_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()})
+
+        if existing_user:
+            flash("Username already exists")
+            return redirect(url_for("register"))
+
+        register = {
+            "username": request.form.get("username").lower(),
+            "password": generate_password_hash(request.form.get("password"))
+        }
+        mongo.db.users.insert_one(register)
+
+        # put the new user into 'session' cookie
+        session["user"] = request.form.get("username").lower()
+        flash("Registration Successful!")
+        return redirect(url_for("profile", username=session["user"]))
+    return render_template("register.html")
+
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -57,11 +82,9 @@ def login():
                 existing_user["password"],
                 request.form.get("password"),
             ):
-                session["user"] = request.form.get("username").lower()
-                flash(Markup(
-                    f"<h2>Welcome, {request.form.get(
-                        'username')}!</h2>What is your focus today?"
-                ).format(request.form.get("username")))
+                username = request.form.get("username").lower()
+                session["user"] = username
+                flash(f"Welcome, {username}!")
                 return redirect(url_for("profile", username=session["user"]))
             else:
                 # invalid password match
@@ -76,9 +99,42 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/profile/<username>")
+def profile(username):
+    """
+    Show the logged-in user's tasks. Redirects to login if there is no session.
+    """
+    user = session.get("user")
+    if not user:
+        flash("Please log in to view your profile.")
+        return redirect(url_for("login"))
+
+    if user != username.lower():
+        flash("You can only view your own profile.")
+        return redirect(url_for("profile", username=user))
+
+    tasks = list(
+        mongo.db.tasks.find({"created_by": user}).sort("due_date", 1)
+    )
+    return render_template("tasks.html", tasks=tasks)
+
+
+@app.route("/logout")
+def logout():
+    """Clear the user session and return to the login page."""
+    session.pop("user", None)
+    flash("You have been logged out.")
+    return redirect(url_for("login"))
+
+
 
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task():
+    user = session.get("user")
+    if not user:
+        flash("Please log in to add a task.")
+        return redirect(url_for("login"))
+
     if request.method == "POST":
         is_urgent = "on" if request.form.get("is_urgent") else "off"
         task = {
@@ -87,7 +143,7 @@ def add_task():
             "task_description": request.form.get("task_description"),
             "is_urgent": is_urgent,
             "due_date": request.form.get("due_date"),
-            "created_by": session["user"]
+            "created_by": user
         }
         mongo.db.tasks.insert_one(task)
         flash("Task Successfully Added")
@@ -98,6 +154,11 @@ def add_task():
 
 @app.route("/edit_task/<task_id>", methods=["GET", "POST"])
 def edit_task(task_id):
+    user = session.get("user")
+    if not user:
+        flash("Please log in to edit tasks.")
+        return redirect(url_for("login"))
+
     if request.method == "POST":
         is_urgent = "on" if request.form.get("is_urgent") else "off"
         submit = {
@@ -106,7 +167,7 @@ def edit_task(task_id):
             "task_description": request.form.get("task_description"),
             "is_urgent": is_urgent,
             "due_date": request.form.get("due_date"),
-            "created_by": session["user"]
+            "created_by": user
         }
         mongo.db.tasks.update_one(
             {"_id": ObjectId(task_id)},
