@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="container text-center py-3">
-    <h1 class="taskTheme heading-tight"><strong>Good Morning, {{ session.user}}!</strong></h1>
+    <h1 class="taskTheme heading-tight"><strong>{{ greeting }}, {{ session.user}}!</strong></h1>
     <h3>You Have {{ tasks|length }} Tasks</h3>
 </div>
 
@@ -10,10 +10,11 @@
     <form class="row gy-2 gx-2 align-items-center"
         method="GET"
         action="{{ url_for('my_tasks') }}">
-        <div class="col-12 col-md-9 col-lg-10">
+        <div class="col-12 col-md-6 col-lg-4">
             <select class="form-select"
                 name="category"
-                aria-label="Filter by category">
+                aria-label="Filter by category"
+                onchange="this.form.submit()">
                 <option value=""
                     {% if not selected_category %}selected{% endif %}>All Categories</option>
                 {% for category in categories %}
@@ -23,12 +24,6 @@
                 </option>
                 {% endfor %}
             </select>
-        </div>
-        <div class="col-12 col-md-3 col-lg-2 d-grid">
-            <button type="submit"
-                class="btn btn-secondary">
-                <i class="bi bi-search me-1"></i>Search
-            </button>
         </div>
     </form>
 </div>
@@ -70,7 +65,8 @@
 
                     <form action="{{ url_for('delete_task', task_id=task._id) }}"
                         method="POST"
-                        class="d-inline-flex">
+                        class="d-inline-flex"
+                        onsubmit="return confirm('Delete this task? This cannot be undone.');">
                         <input type="hidden"
                             name="csrf_token"
                             value="{{ csrf_token() }}">

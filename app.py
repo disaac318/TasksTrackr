@@ -34,6 +34,16 @@ def format_date(value, in_fmt="%Y-%m-%d", out_fmt="%d-%m-%Y"):
         return value
 
 
+def current_greeting():
+    """Return a time-of-day greeting."""
+    hour = datetime.now().hour
+    if 5 <= hour < 12:
+        return "Good Morning"
+    if 12 <= hour < 18:
+        return "Good Afternoon"
+    return "Good Evening"
+
+
 @app.route("/")
 @app.route("/get_welcome")
 def get_welcome():
@@ -96,6 +106,7 @@ def my_tasks():
         tasks=tasks,
         categories=categories,
         selected_category=selected_category,
+        greeting=current_greeting(),
     )
 
 
