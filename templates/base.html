@@ -92,9 +92,35 @@
 
 
 
-          <h1>I'm part of the base template!</h1>
-          {% block content %}
-          {% endblock %}
+          <!-- Flash Messages -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          {% for category, message in messages %}
+          <div class="alert alert-{{ 'warning' if category == 'message' else category }} alert-dismissible fade show flash-alert text-center"
+               role="alert"
+               data-effect-duration="5000">
+               {{ message }}
+               <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% endwith %}
+
+          <!-- Main Content -->
+          <main>
+               <div class="container mt-5">
+                    {% block content %}{% endblock %}
+               </div>
+          </main>
+
+          <!-- Footer -->
+          <footer class="text-center py-3 mt-5 border-top">
+               <small>©2025 <strong class="taskTheme">TasksTrackr&trade;</strong> by
+                    <span class="text-color-warning"> The App Alchemy</span> <br>
+                    Powered by Flask</small>
+          </footer>
 
 
           <!-- bootrap js -->
