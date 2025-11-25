@@ -7,6 +7,8 @@ from flask_pymongo import PyMongo
 from flask_wtf import CSRFProtect
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+
+# Load local environment variables for dev if present
 if os.path.exists("env.py"):
     import env
 
@@ -20,6 +22,7 @@ mongo = PyMongo(app)
 csrf = CSRFProtect(app)
 
 
+# ---------- Helpers ----------
 @app.template_filter("format_date")
 def format_date(value, in_fmt="%Y-%m-%d", out_fmt="%d-%m-%Y"):
     """
@@ -73,7 +76,7 @@ def get_current_user():
 
 @app.context_processor
 def inject_user_context():
-    """Provide current_user and is_admin flag to all templates without direct DB calls in Jinja."""
+    """Provide common user flags to all templates without direct DB calls in Jinja."""
     user_doc = get_current_user()
     return {
         "current_user": user_doc,
@@ -83,6 +86,7 @@ def inject_user_context():
     }
 
 
+# ---------- Public / Auth routes ----------
 @app.route("/")
 @app.route("/get_welcome")
 def get_welcome():
@@ -155,8 +159,9 @@ def profile(username):
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """Create a new user account."""
     if request.method == "POST":
-        # check if username already exists in db
+        # Check if username already exists in DB
         existing_user = mongo.db.users.find_one(
             {"username": request.form.get("username").lower()})
 
@@ -183,8 +188,9 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Authenticate a user and start a session."""
     if request.method == "POST":
-        # check if username exists in db
+        # Check if username exists in DB
         existing_user = mongo.db.users.find_one(
             {"username": request.form.get("username").lower()})
 
@@ -207,7 +213,7 @@ def login():
                 flash(f"Welcome, {username}!")
                 return redirect(url_for("my_tasks"))
             else:
-                # invalid password match
+                # Invalid password; track failures and freeze after 3 attempts
                 failed = existing_user.get("failed_logins", 0) + 1
                 updates = {"failed_logins": failed}
                 freeze = False
@@ -233,26 +239,6 @@ def login():
 
 
 
-# @app.route("/profile/<username>")
-# def profile(username):
-#     """
-#     Show the logged-in user's tasks. Redirects to login if there is no session.
-#     """
-#     user = session.get("user")
-#     if not user:
-#         flash("Please log in to view your profile.")
-#         return redirect(url_for("login"))
-
-#     if user != username.lower():
-#         flash("You can only view your own profile.")
-#         return redirect(url_for("profile", username=user))
-
-#     tasks = list(
-#         mongo.db.tasks.find({"created_by": user}).sort("due_date", 1)
-#     )
-#     return render_template("tasks.html", tasks=tasks)
-
-
 @app.route("/logout")
 def logout():
     """Clear the user session and return to the login page."""
@@ -264,6 +250,7 @@ def logout():
 
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task():
+    """Create a task for the logged-in user."""
     user = session.get("user")
     if not user:
         flash("Please log in to add a task.")
@@ -288,6 +275,7 @@ def add_task():
 
 @app.route("/edit_task/<task_id>", methods=["GET", "POST"])
 def edit_task(task_id):
+    """Edit an existing task (owner only)."""
     user = session.get("user")
     if not user:
         flash("Please log in to edit tasks.")

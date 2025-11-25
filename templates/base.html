@@ -78,12 +78,7 @@
                                         href="{{ url_for('admin_categories') }}">Categories</a></li>
                             </ul>
                         </li>
-                        {% endif %}
-
-                        <!-- <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'profile' %}text-warning{% endif %}"
-                                href="{{ url_for('profile', username=session['user']) }}">Profile</a>
-                        </li> -->
+                        {% endif %}                       
 
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'add_task' %}text-warning{% endif %}"

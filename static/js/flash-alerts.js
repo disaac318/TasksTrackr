@@ -1,3 +1,4 @@
+// Basic flash-message animation: blink a few times, then auto-dismiss.
 document.addEventListener("DOMContentLoaded", function () {
     const alerts = document.querySelectorAll(".flash-alert");
 
