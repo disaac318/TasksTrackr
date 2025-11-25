@@ -50,6 +50,56 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
+@app.route("/my_tasks")
+def my_tasks():
+    """
+    Show only the tasks created by the logged-in user. Supports optional category filtering via ?category=<name>.
+    """
+    user = session.get("user")
+    if not user:
+        flash("Please log in to view your tasks.")
+        return redirect(url_for("login"))
+
+    selected_category = request.args.get("category", "").strip()
+
+    query = {"created_by": user}
+    if selected_category:
+        query["category_name"] = selected_category
+
+    tasks = list(
+        mongo.db.tasks.find(query).sort("due_date", 1)
+    )
+    categories = list(mongo.db.categories.find().sort("category_name", 1))
+
+    return render_template(
+        "my_tasks.html",
+        tasks=tasks,
+        categories=categories,
+        selected_category=selected_category,
+    )
+
+
+@app.route("/profile/<username>")
+def profile(username):
+    """
+    Display the logged-in user's tasks. Redirects if not logged in or mismatched.
+    """
+    user = session.get("user")
+    if not user:
+        flash("Please log in to view your profile.")
+        return redirect(url_for("login"))
+
+    username = username.lower()
+    if user != username:
+        flash("You can only view your own profile.")
+        return redirect(url_for("profile", username=user))
+
+    tasks = list(
+        mongo.db.tasks.find({"created_by": user}).sort("due_date", 1)
+    )
+    return render_template("my_tasks.html", tasks=tasks)
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -105,24 +155,25 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/profile/<username>")
-def profile(username):
-    """
-    Show the logged-in user's tasks. Redirects to login if there is no session.
-    """
-    user = session.get("user")
-    if not user:
-        flash("Please log in to view your profile.")
-        return redirect(url_for("login"))
 
-    if user != username.lower():
-        flash("You can only view your own profile.")
-        return redirect(url_for("profile", username=user))
+# @app.route("/profile/<username>")
+# def profile(username):
+#     """
+#     Show the logged-in user's tasks. Redirects to login if there is no session.
+#     """
+#     user = session.get("user")
+#     if not user:
+#         flash("Please log in to view your profile.")
+#         return redirect(url_for("login"))
 
-    tasks = list(
-        mongo.db.tasks.find({"created_by": user}).sort("due_date", 1)
-    )
-    return render_template("tasks.html", tasks=tasks)
+#     if user != username.lower():
+#         flash("You can only view your own profile.")
+#         return redirect(url_for("profile", username=user))
+
+#     tasks = list(
+#         mongo.db.tasks.find({"created_by": user}).sort("due_date", 1)
+#     )
+#     return render_template("tasks.html", tasks=tasks)
 
 
 @app.route("/logout")

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container text-center py-3">
+    <h1 class="taskTheme"><strong>Good Morning, {{ session.user}}!</strong></h1>
+    <h3>You Have {{ tasks|length }} Tasks</h3>
+</div>
+
+<div class="container mb-4">
+    <form class="row gy-2 gx-2 align-items-center"
+        method="GET"
+        action="{{ url_for('my_tasks') }}">
+        <div class="col-12 col-md-9 col-lg-10">
+            <select class="form-select"
+                name="category"
+                aria-label="Filter by category">
+                <option value=""
+                    {% if not selected_category %}selected{% endif %}>All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.category_name }}"
+                    {% if selected_category == category.category_name %}selected{% endif %}>
+                    {{ category.category_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3 col-lg-2 d-grid">
+            <button type="submit"
+                class="btn btn-secondary">
+                <i class="bi bi-search me-1"></i>Search
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="accordion"
+        id="accordionTasks">
+
+    {% for task in tasks %}
+    <!-- Accordion item -->
+    {% if session.user|lower == task.created_by|lower %}
+    <div class="accordion-item shadow-sm">
+        <h2 class="accordion-header"
+            id="heading{{ loop.index }}">
+            <div class="d-flex align-items-center justify-content-between w-100">
+                <!-- Accordion toggle -->
+                <button class="accordion-button collapsed flex-grow-1 me-3"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{ loop.index }}"
+                    aria-expanded="false"
+                    aria-controls="collapse{{ loop.index }}">
+                    <strong class="taskTheme txt-up1">{{ task.task_name }}</strong> : &nbsp;&nbsp;<small>{{ task.due_date|format_date }}</small>
+                    {% if task.is_urgent == "on" %}
+                    <i class="bi bi-exclamation-circle-fill text-warning ms-2"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        data-bs-custom-class="tooltip-orange"
+                        title="URGENT!"></i>
+                    {% endif %}
+                </button>
+
+                <!-- Edit & Delete buttons -->
+                <div class="d-flex align-items-start gap-4 me-4">
+                    <a href="{{ url_for('edit_task', task_id=task._id) }}"
+                        class="btn btn-warning btn-sm d-inline-flex align-items-center">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+
+                    <form action="{{ url_for('delete_task', task_id=task._id) }}"
+                        method="POST"
+                        class="d-inline-flex">
+                        <input type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}">
+                        <button type="submit"
+                            class="btn btn-danger btn-sm d-inline-flex align-items-center">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+
+
+            </div>
+        </h2>
+
+
+        <div id="collapse{{ loop.index }}"
+            class="accordion-collapse collapse"
+            aria-labelledby="heading{{ loop.index }}"
+            data-bs-parent="#accordionTasks">
+            <div class="accordion-body">
+                <strong class="taskTheme txt-up1">{{ task.category_name }}</strong>
+                <p>{{ task.task_description }}</p>
+                <p class="text-muted">by: {{ task.created_by }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

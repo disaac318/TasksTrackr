@@ -54,15 +54,23 @@
                     id="navMenu">
                     <ul class="navbar-nav ms-auto">
                         {% if session.user %}
+
+
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'get_tasks' %}text-warning{% endif %}"
                                 href="{{ url_for('get_tasks') }}">Dashboard</a>
                         </li>
-                        
+
                         <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'my_tasks' %}text-warning{% endif %}"
+                                href="{{ url_for('my_tasks') }}">MyTasks</a>
+                        </li>
+
+                        <!-- <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'profile' %}text-warning{% endif %}"
                                 href="{{ url_for('profile', username=session['user']) }}">Profile</a>
-                        </li>
+                        </li> -->
+
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'add_task' %}text-warning{% endif %}"
                                 href="{{ url_for('add_task') }}">New Task</a>
