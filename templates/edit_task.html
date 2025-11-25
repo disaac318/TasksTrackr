@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <h3 class="text-center mb-4">Edit Task</h3>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="POST"
+                action="{{ url_for('edit_task', task_id=task._id) }}">
+                <input type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}">
+
+                <!-- Category Selection -->
+                <div class="mb-3">
+                    <label for="category_name"
+                        class="form-label">
+                        <i class="bi bi-folder2-open me-2"></i>Task Category
+                    </label>
+                    <select id="category_name"
+                        name="category_name"
+                        class="form-select"
+                        required>
+                        <option value=""
+                            disabled>Choose Category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.category_name }}"
+                            {%
+                            if
+                            category.category_name==task.category_name
+                            %}selected{%
+                            endif
+                            %}>
+                            {{ category.category_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Task Name -->
+                <div class="mb-3">
+                    <label for="task_name"
+                        class="form-label">
+                        <i class="bi bi-pencil-square me-2"></i>Task Name
+                    </label>
+                    <input id="task_name"
+                        name="task_name"
+                        type="text"
+                        class="form-control"
+                        minlength="5"
+                        maxlength="50"
+                        value="{{ task.task_name }}"
+                        required>
+                </div>
+
+                <!-- Task Description -->
+                <div class="mb-3">
+                    <label for="task_description"
+                        class="form-label">
+                        <i class="bi bi-card-text me-2"></i>Task Description
+                    </label>
+                    <textarea id="task_description"
+                        name="task_description"
+                        class="form-control"
+                        minlength="5"
+                        maxlength="200"
+                        rows="4"
+                        required>{{ task.task_description }}</textarea>
+                </div>
+
+                <!-- Due Date -->
+                <div class="mb-3">
+                    <label for="due_date"
+                        class="form-label">
+                        <i class="bi bi-calendar-event me-2"></i>Due Date
+                    </label>
+                    <input id="due_date"
+                        name="due_date"
+                        type="date"
+                        class="form-control"
+                        value="{{ task.due_date }}"
+                        required>
+                </div>
+
+                <!-- Urgent Toggle -->
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input"
+                        type="checkbox"
+                        id="is_urgent"
+                        name="is_urgent"
+                        {%
+                        if
+                        task.is_urgent=="on"
+                        %}checked{%
+                        endif
+                        %}>
+                    <label class="form-check-label"
+                        for="is_urgent">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Is Urgent
+                    </label>
+                </div>
+
+                <!-- Buttons -->
+                <div class="text-center">
+                    <a href="{{ url_for('get_tasks') }}"
+                        class="btn btn-danger btn-sm me-2">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+                    <button type="submit"
+                        class="btn btn-secondary btn-sm">
+                        <i class="bi bi-pencil-square me-2"></i>Update Task
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
