@@ -10,51 +10,66 @@
 <div class="accordion"
     id="accordionExample">
 
-    
+    {% for task in tasks %}
     <!-- Accordion item -->
-   
+    {% if session.user|lower == task.created_by|lower %}
     <div class="accordion-item shadow-sm">
         <h2 class="accordion-header"
-            id="heading">
+            id="heading{{ loop.index }}">
             <div class="d-flex align-items-center justify-content-between w-100">
                 <!-- Accordion toggle -->
                 <button class="accordion-button collapsed flex-grow-1 me-3"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#collapse"
+                    data-bs-target="#collapse{{ loop.index }}"
                     aria-expanded="false"
-                    aria-controls="collapse">
-                    <strong></strong> : &nbsp;&nbsp;<small></small>
-                    
+                    aria-controls="collapse{{ loop.index }}">
+                    <strong>{{ task.task_name }}</strong> : &nbsp;&nbsp;<small>{{ task.due_date|format_date }}</small>
+                    {% if task.is_urgent == "on" %}
                     <i class="bi bi-exclamation-circle-fill text-warning ms-2"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right"
                         data-bs-custom-class="tooltip-orange"
                         title="URGENT!"></i>
-                    
+                    {% endif %}
                 </button>
 
-                
+                <!-- Edit & Delete buttons -->
+                <div class="d-flex align-items-start gap-4 me-4">
+                    <button class="btn btn-warning btn-sm d-inline-flex align-items-center"
+                        type="button"
+                        disabled
+                        title="Edit action not wired yet">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm d-inline-flex align-items-center"
+                        type="button"
+                        disabled
+                        title="Delete action not wired yet">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
 
 
             </div>
         </h2>
 
 
-        <div id="collapse"
+        <div id="collapse{{ loop.index }}"
             class="accordion-collapse collapse"
-            aria-labelledby="heading"
+            aria-labelledby="heading{{ loop.index }}"
             data-bs-parent="#accordionExample">
             <div class="accordion-body">
-                <strong></strong>
-                <p></p>
-                <p class="text-muted"><small>Logged by:</small> </p>
+                <strong>{{ task.category_name }}</strong>
+                <p>{{ task.task_description }}</p>
+                <p class="text-muted">by: {{ task.created_by }}</p>
             </div>
         </div>
     </div>
-    
+    {% endif %}
 
-   
+    {% endfor %}
 
 </div>
 
