@@ -41,7 +41,7 @@ def GET_welcome():
 
 
 
-@app.route("/")
+# @app.route("/")
 @app.route("/get_tasks")
 def get_tasks():
     tasks = list(
