@@ -11,10 +11,18 @@
     --logo-color: #fff6600;
     --text-color: #212528;
     --nav-text: #f2f2f2;
-    --body-color: #ccc;
+    --body-color: #f2efef;
     --accordion-tab: #666666;
-    --maroon-koto: #930000
+    --maroon-koto: #930000;
+    --navbar-height: 64px;
 
+}
+
+body {
+    color: var(--text-color);
+    background-color: var(--body-color);
+    font-family: "Stack Sans Headline", sans-serif;
+    padding-top: calc(var(--navbar-height) + 12px); /* offsets fixed navbar */
 }
 
 .bg-custom {
