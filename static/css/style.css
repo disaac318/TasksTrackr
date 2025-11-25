@@ -37,6 +37,10 @@ footer {
     color: #880303 !important;
 }
 
+.footer-logo-type {
+     font-size: 1.1rem !important;
+}
+
 .navbar-toggler .navbar-icon-close {
     display: none;
 }
