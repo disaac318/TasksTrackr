@@ -123,7 +123,7 @@ def profile(username):
 def logout():
     """Clear the user session and return to the login page."""
     session.pop("user", None)
-    flash("You have been logged out.")
+    flash("Thank you for using TaskTrackr™.    You have been logged out.")
     return redirect(url_for("login"))
 
 
