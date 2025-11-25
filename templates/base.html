@@ -130,6 +130,32 @@
         <!-- Custom JS   -->
         <script src="{{ url_for('static', filename='js/flash-alerts.js') }}"></script>
 
+        <!-- Tooltip init -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const forms = document.querySelectorAll(".needs-validation");
+
+                forms.forEach(form => {
+                    form.addEventListener("submit", event => {
+
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add("was-validated");
+                    });
+                });
+            });
+        </script>
+
 
     </body>
 
