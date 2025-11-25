@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 
 from bson.objectid import ObjectId
-from flask import abort, flash, redirect, render_template, request, session, url_for
+from flask import abort, flash, redirect, render_template, request, session, url_for, Flask
 from flask_pymongo import PyMongo
 from flask_wtf import CSRFProtect
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -231,12 +231,12 @@ def login():
                     {"$set": updates}
                 )
                 if freeze:
-                flash(
-                    "Account frozen after too many failed attempts. Contact a superadmin."
-                )
-            else:
-                flash("Incorrect Username and/or Password")
-            return redirect(url_for("login"))
+                    flash(
+                        "Account frozen after too many failed attempts. Contact a superadmin."
+                    )
+                else:
+                    flash("Incorrect Username and/or Password")
+                return redirect(url_for("login"))
 
         else:
             # username doesn't exist
