@@ -82,22 +82,14 @@ def my_tasks():
 @app.route("/profile/<username>")
 def profile(username):
     """
-    Display the logged-in user's tasks. Redirects if not logged in or mismatched.
+    Legacy profile route: redirect to my_tasks for consistency.
     """
     user = session.get("user")
     if not user:
         flash("Please log in to view your profile.")
         return redirect(url_for("login"))
 
-    username = username.lower()
-    if user != username:
-        flash("You can only view your own profile.")
-        return redirect(url_for("profile", username=user))
-
-    tasks = list(
-        mongo.db.tasks.find({"created_by": user}).sort("due_date", 1)
-    )
-    return render_template("my_tasks.html", tasks=tasks)
+    return redirect(url_for("my_tasks"))
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -120,7 +112,7 @@ def register():
         # put the new user into 'session' cookie
         session["user"] = request.form.get("username").lower()
         flash("Registration Successful!")
-        return redirect(url_for("profile", username=session["user"]))
+        return redirect(url_for("my_tasks"))
     return render_template("register.html")
 
 
@@ -141,7 +133,7 @@ def login():
                 username = request.form.get("username").lower()
                 session["user"] = username
                 flash(f"Welcome, {username}!")
-                return redirect(url_for("profile", username=session["user"]))
+                return redirect(url_for("my_tasks"))
             else:
                 # invalid password match
                 flash("Incorrect Username and/or Password")
