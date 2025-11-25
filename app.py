@@ -44,6 +44,39 @@ def get_tasks():
     return render_template("tasks.html", tasks=tasks)
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        # check if username exists in db
+        existing_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()})
+
+        if existing_user:
+            # ensure hashed password matches user input
+            if check_password_hash(
+                existing_user["password"],
+                request.form.get("password"),
+            ):
+                session["user"] = request.form.get("username").lower()
+                flash(Markup(
+                    f"<h2>Welcome, {request.form.get(
+                        'username')}!</h2>What is your focus today?"
+                ).format(request.form.get("username")))
+                return redirect(url_for("profile", username=session["user"]))
+            else:
+                # invalid password match
+                flash("Incorrect Username and/or Password")
+                return redirect(url_for("login"))
+
+        else:
+            # username doesn't exist
+            flash("Incorrect Username and/or Password")
+            return redirect(url_for("login"))
+
+    return render_template("login.html")
+
+
+
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task():
     if request.method == "POST":
