@@ -1,9 +1,8 @@
 import os
 from flask import (
     Flask, flash, render_template,
-    redirect, request, session, url_for,)
-from markupsafe import Markup
-from datetime import datetime
+    redirect, request, session, url_for, abort)
+from datetime import datetime, timedelta
 from flask_pymongo import PyMongo
 from flask_wtf import CSRFProtect
 from bson.objectid import ObjectId
@@ -44,20 +43,51 @@ def current_greeting():
     return "Good Evening"
 
 
+def is_admin(user_doc: dict | None) -> bool:
+    """Return True if the user has an admin role."""
+    return bool(user_doc and user_doc.get("role") == "admin")
+
+
+def is_superadmin(user_doc: dict | None) -> bool:
+    """Return True if the user has the superadmin role."""
+    return bool(user_doc and user_doc.get("role") == "superadmin")
+
+
+def is_frozen(user_doc: dict | None) -> bool:
+    """Return True if the user account is frozen."""
+    return bool(user_doc and user_doc.get("is_frozen"))
+
+
+def generate_reset_token():
+    """Generate a simple time-based token."""
+    return generate_password_hash(str(datetime.utcnow()))
+
+
+def get_current_user():
+    """Return the current user document from session or None."""
+    username = session.get("user")
+    if not username:
+        return None
+    return mongo.db.users.find_one({"username": username})
+
+
+@app.context_processor
+def inject_user_context():
+    """Provide current_user and is_admin flag to all templates without direct DB calls in Jinja."""
+    user_doc = get_current_user()
+    return {
+        "current_user": user_doc,
+        "is_admin_user": is_admin(user_doc),
+        "is_superadmin_user": is_superadmin(user_doc),
+        "is_frozen_user": is_frozen(user_doc),
+    }
+
+
 @app.route("/")
 @app.route("/get_welcome")
 def get_welcome():
     """Landing page for the app."""
     return render_template("welcome.html")
-
-
-@app.route("/get_tasks")
-def get_tasks():
-    tasks = list(
-        mongo.db.tasks.find().sort("due_date", 1)   # chronological
-    )
-
-    return render_template("tasks.html", tasks=tasks)
 
 
 @app.route("/my_tasks")
@@ -136,7 +166,10 @@ def register():
 
         register = {
             "username": request.form.get("username").lower(),
-            "password": generate_password_hash(request.form.get("password"))
+            "password": generate_password_hash(request.form.get("password")),
+            "role": "user",
+            "is_frozen": False,
+            "failed_logins": 0,
         }
         mongo.db.users.insert_one(register)
 
@@ -156,6 +189,10 @@ def login():
             {"username": request.form.get("username").lower()})
 
         if existing_user:
+            if is_frozen(existing_user):
+                flash("Account is frozen. Please contact a superadmin.")
+                return redirect(url_for("login"))
+
             # ensure hashed password matches user input
             if check_password_hash(
                 existing_user["password"],
@@ -163,11 +200,28 @@ def login():
             ):
                 username = request.form.get("username").lower()
                 session["user"] = username
+                mongo.db.users.update_one(
+                    {"_id": existing_user["_id"]},
+                    {"$set": {"failed_logins": 0}}
+                )
                 flash(f"Welcome, {username}!")
                 return redirect(url_for("my_tasks"))
             else:
                 # invalid password match
-                flash("Incorrect Username and/or Password")
+                failed = existing_user.get("failed_logins", 0) + 1
+                updates = {"failed_logins": failed}
+                freeze = False
+                if failed >= 3:
+                    updates["is_frozen"] = True
+                    freeze = True
+                mongo.db.users.update_one(
+                    {"_id": existing_user["_id"]},
+                    {"$set": updates}
+                )
+                if freeze:
+                    flash("Account frozen after too many failed attempts. Contact a superadmin.")
+                else:
+                    flash("Incorrect Username and/or Password")
                 return redirect(url_for("login"))
 
         else:
@@ -227,7 +281,7 @@ def add_task():
         }
         mongo.db.tasks.insert_one(task)
         flash("Task Successfully Added")
-        return redirect(url_for("get_tasks"))
+        return redirect(url_for("my_tasks"))
 
     categories = mongo.db.categories.find().sort("category_name", 1)
     return render_template("add_task.html", categories=categories)
@@ -254,7 +308,7 @@ def edit_task(task_id):
             {"$set": submit}
         )
         flash("Task Successfully Updated")
-        return redirect(url_for("get_tasks"))
+        return redirect(url_for("my_tasks"))
 
     task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
     categories = mongo.db.categories.find().sort("category_name", 1)
@@ -262,9 +316,283 @@ def edit_task(task_id):
 
 @app.route("/delete_task/<task_id>", methods=["POST"])
 def delete_task(task_id):
+    user_doc = get_current_user()
+    if not user_doc:
+        flash("Please log in to delete tasks.")
+        return redirect(url_for("login"))
+
+    task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
+    if not task:
+        abort(404)
+
+    # Only owner or superadmin can delete
+    if not is_superadmin(user_doc) and task.get("created_by") != user_doc["username"]:
+        abort(403)
+
     mongo.db.tasks.delete_one({"_id": ObjectId(task_id)})
     flash("Task Successfully Deleted")
-    return redirect(url_for("get_tasks"))
+    # Redirect based on role
+    if is_superadmin(user_doc):
+        return redirect(url_for("admin_tasks"))
+    return redirect(url_for("my_tasks"))
+
+
+@app.route("/admin/users")
+def admin_users():
+    """
+    Superadmin-only: list users and allow role toggling.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    users = list(mongo.db.users.find().sort("username", 1))
+    return render_template("admin_users.html", users=users)
+
+
+@app.route("/admin/users/<user_id>/toggle_role", methods=["POST"])
+def toggle_role(user_id):
+    """
+    Superadmin-only: toggle a user's role between admin and user.
+    Superadmin cannot demote themselves or other superadmins.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    target = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if not target:
+        abort(404)
+
+    # Prevent demoting self
+    if target["username"] == user_doc["username"]:
+        flash("You cannot change your own role.")
+        return redirect(url_for("admin_users"))
+
+    # Prevent altering other superadmins
+    if is_superadmin(target):
+        flash("You cannot change another superadmin's role.")
+        return redirect(url_for("admin_users"))
+
+    # Toggle admin/user
+    new_role = "admin" if target.get("role") != "admin" else "user"
+    mongo.db.users.update_one({"_id": ObjectId(user_id)}, {"$set": {"role": new_role}})
+    flash(f"Updated {target['username']} to role: {new_role}")
+    return redirect(url_for("admin_users"))
+
+
+@app.route("/admin/users/<user_id>/delete", methods=["POST"])
+def delete_user(user_id):
+    """
+    Superadmin-only: delete a user account and their tasks.
+    Cannot delete self or any superadmin.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    target = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if not target:
+        abort(404)
+
+    if target["username"] == user_doc["username"]:
+        flash("You cannot delete your own account.")
+        return redirect(url_for("admin_users"))
+
+    if is_superadmin(target):
+        flash("You cannot delete a superadmin account.")
+        return redirect(url_for("admin_users"))
+
+    mongo.db.users.delete_one({"_id": ObjectId(user_id)})
+    mongo.db.tasks.delete_many({"created_by": target["username"]})
+    flash(f"Deleted user {target['username']} and their tasks.")
+    return redirect(url_for("admin_users"))
+
+
+@app.route("/admin/users/<user_id>/toggle_freeze", methods=["POST"])
+def toggle_freeze(user_id):
+    """
+    Superadmin-only: freeze/unfreeze a user's account.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    target = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if not target:
+        abort(404)
+
+    if target["username"] == user_doc["username"]:
+        flash("You cannot freeze or unfreeze your own account.")
+        return redirect(url_for("admin_users"))
+
+    if is_superadmin(target):
+        flash("You cannot freeze a superadmin account.")
+        return redirect(url_for("admin_users"))
+
+    new_state = not target.get("is_frozen", False)
+    mongo.db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"is_frozen": new_state, "failed_logins": 0}}
+    )
+    flash(f"{'Frozen' if new_state else 'Unfrozen'} user {target['username']}.")
+    return redirect(url_for("admin_users"))
+
+
+@app.route("/reset_request", methods=["GET", "POST"])
+def reset_request():
+    """
+    Allow a user to request a password reset token.
+    In a real deployment, this would email the token link.
+    Here we display the link after generating it.
+    """
+    reset_link = None
+    if request.method == "POST":
+        username = request.form.get("username", "").lower().strip()
+        user = mongo.db.users.find_one({"username": username})
+        if user:
+            token = generate_reset_token()
+            expires = datetime.utcnow() + timedelta(hours=1)
+            mongo.db.users.update_one(
+                {"_id": user["_id"]},
+                {"$set": {"reset_token": token, "reset_expires": expires}}
+            )
+            reset_link = url_for("reset_password", token=token, _external=True)
+            flash("Reset link generated (valid for 1 hour).")
+        else:
+            flash("If the account exists, a reset link has been generated.")
+        return render_template("reset_request.html", reset_link=reset_link)
+
+    return render_template("reset_request.html", reset_link=reset_link)
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    """
+    Reset password using a token.
+    """
+    user = mongo.db.users.find_one({"reset_token": token})
+    if not user:
+        flash("Invalid or expired reset token.")
+        return redirect(url_for("login"))
+
+    expires = user.get("reset_expires")
+    if not expires or expires < datetime.utcnow():
+        flash("Reset token has expired.")
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+        if not password or password != confirm:
+            flash("Passwords do not match.")
+            return redirect(url_for("reset_password", token=token))
+
+        mongo.db.users.update_one(
+            {"_id": user["_id"]},
+            {"$set": {
+                "password": generate_password_hash(password),
+                "failed_logins": 0,
+                "is_frozen": False
+            },
+                "$unset": {"reset_token": "", "reset_expires": ""}
+            }
+        )
+        flash("Password updated. Please log in.")
+        return redirect(url_for("login"))
+
+    return render_template("reset_password.html", token=token)
+
+
+@app.route("/admin/tasks")
+def admin_tasks():
+    """
+    Superadmin-only: view all tasks across users.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    selected_user = request.args.get("owner", "").strip()
+    query = {}
+    if selected_user:
+        query["created_by"] = selected_user
+
+    tasks = list(mongo.db.tasks.find(query).sort("due_date", 1))
+    users = list(mongo.db.users.find().sort("username", 1))
+    return render_template(
+        "admin_tasks.html",
+        tasks=tasks,
+        users=users,
+        selected_user=selected_user,
+    )
+
+
+@app.route("/admin/tasks/<task_id>/delete", methods=["POST"])
+def admin_delete_task(task_id):
+    """
+    Superadmin-only: delete any task.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
+    if not task:
+        abort(404)
+
+    mongo.db.tasks.delete_one({"_id": ObjectId(task_id)})
+    flash("Task deleted.")
+    return redirect(url_for("admin_tasks"))
+
+
+@app.route("/admin/categories", methods=["GET", "POST"])
+def admin_categories():
+    """
+    Superadmin-only: manage categories.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    if request.method == "POST":
+        name = request.form.get("category_name", "").strip()
+        if not name:
+            flash("Category name is required.")
+        else:
+            existing = mongo.db.categories.find_one({"category_name": name})
+            if existing:
+                flash("Category already exists.")
+            else:
+                mongo.db.categories.insert_one({"category_name": name})
+                flash("Category added.")
+        return redirect(url_for("admin_categories"))
+
+    categories = list(mongo.db.categories.find().sort("category_name", 1))
+    return render_template("admin_categories.html", categories=categories)
+
+
+@app.route("/admin/categories/<category_id>/delete", methods=["POST"])
+def delete_category(category_id):
+    """
+    Superadmin-only: delete a category if no tasks reference it.
+    """
+    user_doc = get_current_user()
+    if not is_superadmin(user_doc):
+        abort(403)
+
+    category = mongo.db.categories.find_one({"_id": ObjectId(category_id)})
+    if not category:
+        abort(404)
+
+    in_use = mongo.db.tasks.count_documents({"category_name": category["category_name"]})
+    if in_use:
+        flash("Cannot delete a category that is in use by tasks.")
+        return redirect(url_for("admin_categories"))
+
+    mongo.db.categories.delete_one({"_id": ObjectId(category_id)})
+    flash("Category deleted.")
+    return redirect(url_for("admin_categories"))
 
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),

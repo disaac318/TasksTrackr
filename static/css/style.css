@@ -52,6 +52,9 @@ footer {
 .txt-up1 {
      font-size: 1.1rem !important;
 }
+.txt-up2 {
+     font-size: 1.3rem !important;
+}
 
 .heading-tight {
     margin-top: -10px;
@@ -91,6 +94,7 @@ footer {
     .navbar {
         position: static !important;
     }
+
 }
 
 
@@ -247,6 +251,7 @@ footer {
 /* Flash alert blink effect */
 .flash-alert {
     transition: opacity 0.25s ease-in-out;
+    font-size: 125%;
 }
 
 .flash-alert.blink {

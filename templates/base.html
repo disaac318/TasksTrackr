@@ -57,14 +57,28 @@
 
 
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'get_tasks' %}text-warning{% endif %}"
-                                href="{{ url_for('get_tasks') }}">Dashboard</a>
-                        </li>
-
-                        <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'my_tasks' %}text-warning{% endif %}"
                                 href="{{ url_for('my_tasks') }}">MyTasks</a>
                         </li>
+                        {% if is_superadmin_user %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {% if request.endpoint in ['admin_users', 'admin_tasks', 'admin_categories'] %}text-warning{% endif %}"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item"
+                                        href="{{ url_for('admin_users') }}">Users</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ url_for('admin_tasks') }}">All Tasks</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ url_for('admin_categories') }}">Categories</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
 
                         <!-- <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'profile' %}text-warning{% endif %}"
