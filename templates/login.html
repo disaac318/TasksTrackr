@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container text-center py-3">
+     <h1>Welcome to the StockManager</h1>
+     <p>Your Smart Inventory</p>
+</div>
+
+<div class="container mt-4">
+     <h3 class="text-center">Login</h3>
+
+     <div class="row justify-content-center mt-4">
+          <div class="col-12 col-md-8">
+               <div class="card shadow-sm">
+                    <div class="card-body">
+                         <form method="POST"
+                              action="{{ url_for('login') }}"> <!-- Python def login():  -->
+                              <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                              <!-- Username -->
+                              <div class="form-floating mb-3">
+                                   <input id="username"
+                                        name="username"
+                                        type="text"
+                                        minlength="5"
+                                        maxlength="30"
+                                        pattern="^[A-Za-z0-9_]{5,30}$"
+                                        class="form-control"
+                                        required>
+                                   <label for="username">Username</label>
+                              </div>
+
+                              <!-- Password -->
+                              <div class="form-floating mb-3">
+                                   <input id="password"
+                                        name="password"
+                                        type="password"
+                                        minlength="6"
+                                        maxlength="128"
+                                        class="form-control"
+                                        required>
+                                   <label for="password">Password</label>
+                              </div>
+
+                              <!-- Submit -->
+                              <div class="d-grid">
+                                   <button type="submit"
+                                        class="btn btn-secondary btn-lg">
+                                        Login <i class="bi bi-box-arrow-in-right"></i>
+                                   </button>
+                              </div>
+
+                         </form>
+                    </div>
+               </div>
+          </div>
+     </div>
+</div>
+
+{% endblock %}
