@@ -16,6 +16,7 @@
     --maroon-koto: #930000;
     --navbar-height: 64px;
 
+
 }
 
 body {
@@ -34,6 +35,10 @@ footer {
 }
 
 .taskTheme {
+    color: var(--maroon-koto) !important;
+}
+
+.text-user {
     color: var(--maroon-koto) !important;
 }
 
