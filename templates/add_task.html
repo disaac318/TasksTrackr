@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="text-center text-secondary mb-4"><i class="fa-solid fa-list-check me-3"></i>Add Task</h3>
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form class="needs-validation"
+                novalidate
+                method="POST"
+                action="{{ url_for('add_task') }}">
+                <input type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}">
+
+                <!-- Category -->
+                <div class="form-floating mb-3">
+                    <select class="form-select"
+                        id="category_name"
+                        name="category_name"
+                        required>
+                        <option value=""
+                            disabled
+                            selected>Select Category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="category_name"><i class="bi bi-folder"></i> Task Category</label>
+                    <div class="invalid-feedback">Please select a category.</div>
+                </div>
+
+                <!-- Task Name -->
+                <div class="form-floating mb-3">
+                    <input id="task_name"
+                        name="task_name"
+                        type="text"
+                        class="form-control"
+                        minlength="5"
+                        maxlength="50"
+                        required>
+                    <label for="task_name"><i class="bi bi-pencil-square"></i> Task Name</label>
+                    <div class="invalid-feedback">Task name must be 5–50 characters.</div>
+                </div>
+
+                <!-- Task Description -->
+                <div class="form-floating mb-3">
+                    <textarea id="task_description"
+                        name="task_description"
+                        class="form-control"
+                        style="height: 120px"
+                        minlength="5"
+                        maxlength="200"
+                        required></textarea>
+                    <label for="task_description"><i class="bi bi-align-left"></i> Task Description</label>
+                    <div class="invalid-feedback">Description must be 5–200 characters.</div>
+                </div>
+
+                <!-- Due Date -->
+                <div class="form-floating mb-3">
+                    <input id="due_date"
+                        name="due_date"
+                        type="date"
+                        class="form-control"
+                        required>
+                    <label for="due_date"><i class="bi bi-calendar-date"></i> Due Date</label>
+                    <div class="invalid-feedback">Please select a valid due date.</div>
+                </div>
+
+                <!-- Urgent Switch -->
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input"
+                        type="checkbox"
+                        id="is_urgent"
+                        name="is_urgent">
+                    <label class="form-check-label"
+                        for="is_urgent">
+                        <i class="bi bi-exclamation-circle text-danger"></i> Is Urgent
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <div class="d-grid">
+                    <button class="btn btn-secondary btn-lg"
+                        type="submit">
+                        Add Task <i class="bi bi-plus-circle"></i>
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
