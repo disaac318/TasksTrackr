@@ -34,10 +34,14 @@ footer {
 }
 
 .taskTheme {
-    color: #880303 !important;
+    color: var(--maroon-koto) !important;
 }
 
 .footer-logo-type {
+     font-size: 1.1rem !important;
+}
+
+.txt-up1 {
      font-size: 1.1rem !important;
 }
 

@@ -3,7 +3,7 @@
 
 <div class="container text-center py-3">
     <h1 class="taskTheme"><strong>Your Tasks</strong></h1>
-    <p>Manage your tasks here.</p>
+    <h3>Manage your tasks here.</h3>
 </div>
 
 
@@ -24,7 +24,7 @@
                     data-bs-target="#collapse{{ loop.index }}"
                     aria-expanded="false"
                     aria-controls="collapse{{ loop.index }}">
-                    <strong>{{ task.task_name }}</strong> : &nbsp;&nbsp;<small>{{ task.due_date|format_date }}</small>
+                    <strong class="taskTheme txt-up1">{{ task.task_name }}</strong> : &nbsp;&nbsp;<small>{{ task.due_date|format_date }}</small>
                     {% if task.is_urgent == "on" %}
                     <i class="bi bi-exclamation-circle-fill text-warning ms-2"
                         data-bs-toggle="tooltip"
@@ -64,7 +64,7 @@
             aria-labelledby="heading{{ loop.index }}"
             data-bs-parent="#accordionTasks">
             <div class="accordion-body">
-                <strong>{{ task.category_name }}</strong>
+                <strong class="taskTheme txt-up1">{{ task.category_name }}</strong>
                 <p>{{ task.task_description }}</p>
                 <p class="text-muted">by: {{ task.created_by }}</p>
             </div>

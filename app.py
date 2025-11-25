@@ -36,12 +36,11 @@ def format_date(value, in_fmt="%Y-%m-%d", out_fmt="%d-%m-%Y"):
 
 @app.route("/")
 @app.route("/get_welcome")
-def GET_welcome():
-        return render_template("welcome.html")
+def get_welcome():
+    """Landing page for the app."""
+    return render_template("welcome.html")
 
 
-
-# @app.route("/")
 @app.route("/get_tasks")
 def get_tasks():
     tasks = list(
@@ -131,7 +130,7 @@ def logout():
     """Clear the user session and return to the login page."""
     session.pop("user", None)
     flash("Thank you for using TaskTrackr™.    You have been logged out.")
-    return redirect(url_for("login"))
+    return redirect(url_for("get_welcome"))
 
 
 

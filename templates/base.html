@@ -39,7 +39,7 @@
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-5 fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold text-warning"
-                    href="">TaskTrackr&trade;</a>
+                    href="{{ url_for('get_welcome') }}">TaskTrackr&trade;</a>
                 <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
@@ -67,8 +67,9 @@
                                 href="{{ url_for('add_task') }}">New Task</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'manage_categories' %}text-warning{% endif %}"
-                                href="#">Manage Categories</a>
+                            <span class="nav-link disabled text-warning-muted">
+                                Hello {{ session["user"] }}
+                            </span>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'logout' %}text-warning{% endif %}"
