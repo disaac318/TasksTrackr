@@ -23,12 +23,11 @@
                     <div class="card-body">
                          <h5 class="my-3">Please Login</h5>
                          <form method="POST"
-                              action="{{ url_for('login') }}"> <!-- Python def login():  -->
+                              action="{{ url_for('login') }}">
                               <input type="hidden"
                                    name="csrf_token"
                                    value="{{ csrf_token() }}">
 
-                              <!-- Username -->
                               <div class="form-floating mb-3">
                                    <input id="username"
                                         name="username"
@@ -41,7 +40,6 @@
                                    <label for="username">Username</label>
                               </div>
 
-                              <!-- Password -->
                               <div class="form-floating mb-3">
                                    <input id="password"
                                         name="password"
@@ -53,7 +51,6 @@
                                    <label for="password">Password</label>
                               </div>
 
-                              <!-- Submit -->
                               <div class="d-grid">
                                    <button type="submit"
                                         class="btn btn-secondary btn-lg">

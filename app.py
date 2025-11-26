@@ -338,10 +338,10 @@ def delete_task(task_id):
 @app.route("/admin/users")
 def admin_users():
     """
-    Superadmin-only: list users and allow role toggling.
+    Admin+ access: list users. Only superadmin can change roles/delete.
     """
     user_doc = get_current_user()
-    if not is_superadmin(user_doc):
+    if not (is_superadmin(user_doc) or is_admin(user_doc)):
         abort(403)
 
     users = list(mongo.db.users.find().sort("username", 1))
@@ -410,10 +410,10 @@ def delete_user(user_id):
 @app.route("/admin/users/<user_id>/toggle_freeze", methods=["POST"])
 def toggle_freeze(user_id):
     """
-    Superadmin-only: freeze/unfreeze a user's account.
+    Admin+ can freeze/unfreeze a user's account.
     """
     user_doc = get_current_user()
-    if not is_superadmin(user_doc):
+    if not (is_superadmin(user_doc) or is_admin(user_doc)):
         abort(403)
 
     target = mongo.db.users.find_one({"_id": ObjectId(user_id)})
@@ -508,10 +508,10 @@ def reset_password(token):
 @app.route("/admin/tasks")
 def admin_tasks():
     """
-    Superadmin-only: view all tasks across users.
+    Admin+ can view all tasks across users.
     """
     user_doc = get_current_user()
-    if not is_superadmin(user_doc):
+    if not (is_superadmin(user_doc) or is_admin(user_doc)):
         abort(403)
 
     selected_user = request.args.get("owner", "").strip()
@@ -532,10 +532,10 @@ def admin_tasks():
 @app.route("/admin/tasks/<task_id>/delete", methods=["POST"])
 def admin_delete_task(task_id):
     """
-    Superadmin-only: delete any task.
+    Admin+ can delete any task.
     """
     user_doc = get_current_user()
-    if not is_superadmin(user_doc):
+    if not (is_superadmin(user_doc) or is_admin(user_doc)):
         abort(403)
 
     task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
@@ -550,10 +550,10 @@ def admin_delete_task(task_id):
 @app.route("/admin/categories", methods=["GET", "POST"])
 def admin_categories():
     """
-    Superadmin-only: manage categories.
+    Admin+ can manage categories.
     """
     user_doc = get_current_user()
-    if not is_superadmin(user_doc):
+    if not (is_superadmin(user_doc) or is_admin(user_doc)):
         abort(403)
 
     if request.method == "POST":
@@ -576,10 +576,10 @@ def admin_categories():
 @app.route("/admin/categories/<category_id>/delete", methods=["POST"])
 def delete_category(category_id):
     """
-    Superadmin-only: delete a category if no tasks reference it.
+    Admin+ can delete a category if no tasks reference it.
     """
     user_doc = get_current_user()
-    if not is_superadmin(user_doc):
+    if not (is_superadmin(user_doc) or is_admin(user_doc)):
         abort(403)
 
     category = mongo.db.categories.find_one({"_id": ObjectId(category_id)})
@@ -596,6 +596,8 @@ def delete_category(category_id):
     return redirect(url_for("admin_categories"))
 
 if __name__ == "__main__":
-    app.run(host=os.environ.get("IP"),
-            port=int(os.environ.get("PORT")),
-            debug=True)
+    app.run(
+        host=os.environ.get("IP"),
+        port=int(os.environ.get("PORT")),
+        debug=True,
+    )

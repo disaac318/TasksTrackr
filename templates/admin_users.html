@@ -2,7 +2,8 @@
 {% block content %}
 
 <div class="container py-3">
-    <h2 class="taskTheme mb-4">User Management</h2>
+    <h2 class="taskTheme mb-2">User Management</h2>
+    <p class="text-muted mb-4 small">Admins can freeze/unfreeze accounts. Only superadmins can change roles or delete users.</p>
 
     <div class="table-responsive">
         <table class="table align-middle">
@@ -37,6 +38,7 @@
                     </td>
                     <td class="text-end">
                         {% if session.user != user.username and user.role != 'superadmin' %}
+                        {% if is_superadmin_user %}
                         <form method="POST"
                             action="{{ url_for('toggle_role', user_id=user._id) }}"
                             class="d-inline-block me-2 d-none d-md-inline-block"
@@ -53,6 +55,8 @@
                                 {% endif %}
                             </button>
                         </form>
+                        {% endif %}
+                        {% if is_superadmin_user or is_admin_user %}
                         <form method="POST"
                             action="{{ url_for('toggle_freeze', user_id=user._id) }}"
                             class="d-inline-block me-2 d-none d-md-inline-block"
@@ -69,6 +73,8 @@
                                 {% endif %}
                             </button>
                         </form>
+                        {% endif %}
+                        {% if is_superadmin_user %}
                         <form method="POST"
                             action="{{ url_for('delete_user', user_id=user._id) }}"
                             class="d-inline-block"
@@ -81,6 +87,7 @@
                                 Delete User
                             </button>
                         </form>
+                        {% endif %}
                         {% else %}
                         {% if session.user == user.username %}
                         <span class="text-muted">Your account</span>

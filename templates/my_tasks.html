@@ -6,7 +6,6 @@
     <h3>You Have {{ tasks|length }} Tasks</h3>
 </div>
 
-<!-- Category filter and heading -->
 <div class="container mb-4">
     <div class="row gy-2 gx-2 align-items-center">
         <div class="col-12 col-md-6 col-lg-8 order-md-1 text-md-start text-center">
@@ -40,13 +39,11 @@
         id="accordionTasks">
 
     {% for task in tasks %}
-    <!-- Accordion item -->
     {% if session.user|lower == task.created_by|lower %}
     <div class="accordion-item shadow-sm {{ task.rag_class }}">
         <h2 class="accordion-header"
             id="heading{{ loop.index }}">
             <div class="d-flex align-items-center justify-content-between w-100">
-                <!-- Accordion toggle -->
                 <button class="accordion-button collapsed flex-grow-1 me-3"
                     type="button"
                     data-bs-toggle="collapse"
@@ -63,7 +60,6 @@
                     {% endif %}
                 </button>
 
-                <!-- Edit & Delete buttons -->
                 <div class="d-flex align-items-start gap-4 me-4">
                     <a href="{{ url_for('edit_task', task_id=task._id) }}"
                         class="btn btn-warning btn-sm d-inline-flex align-items-center">

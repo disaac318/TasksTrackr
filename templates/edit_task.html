@@ -13,7 +13,6 @@
                     name="csrf_token"
                     value="{{ csrf_token() }}">
 
-                <!-- Category Selection -->
                 <div class="mb-3">
                     <label for="category_name"
                         class="form-label">
@@ -39,7 +38,6 @@
                     </select>
                 </div>
 
-                <!-- Task Name -->
                 <div class="mb-3">
                     <label for="task_name"
                         class="form-label">
@@ -55,7 +53,6 @@
                         required>
                 </div>
 
-                <!-- Task Description -->
                 <div class="mb-3">
                     <label for="task_description"
                         class="form-label">
@@ -70,7 +67,6 @@
                         required>{{ task.task_description }}</textarea>
                 </div>
 
-                <!-- Due Date -->
                 <div class="mb-3">
                     <label for="due_date"
                         class="form-label">
@@ -84,7 +80,6 @@
                         required>
                 </div>
 
-                <!-- Urgent Toggle -->
                 <div class="form-check form-switch mb-4">
                     <input class="form-check-input"
                         type="checkbox"
@@ -102,7 +97,6 @@
                     </label>
                 </div>
 
-                <!-- Buttons -->
                 <div class="row gx-2">
                     <div class="col">
                         <a href="{{ url_for('my_tasks') }}"
