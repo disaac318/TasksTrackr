@@ -42,7 +42,7 @@ TasksTrackr™ organizes personal and professional work with CRUD task managemen
   
 ### Wireframes
 <details><summary>Desktop</summary>
-<img src="./docs/wireFrame/wireFrame_desktop.webp">
+<img src="./docs/wireFrame/wireFrame_desktop-01.webp">
 </details>
 <details><summary>Tablet</summary>
 <img src="./docs/wireFrame/wireFrame_tablet.webp">
