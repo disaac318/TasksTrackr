@@ -16,7 +16,7 @@ TasksTrackr is a full-stack, data-centric task management web application built 
 7. Deployment
 8. Security Considerations
 9. Deployment
-10. Future Imrovements
+10. Future Improvements
 11. Development Challenges and Resolutions
 12. Credits
 
@@ -25,10 +25,16 @@ TasksTrackr is a data-driven productivity platform designed to organise personal
 
 The backend logic is handled by Flask, persistent storage is managed via MongoDB Atlas, the interface is delivered using Bootstrap 5, and user authentication is secured through Flask sessions and password hashing.
 
+The development of TasksTrackr is driven by the need for a clear, practical, and data-centred solution that helps users organise their daily responsibilities in an efficient and accessible way. In modern working and learning environments, individuals frequently manage multiple priorities across both personal and professional domains. Without a structured system, tasks are easily forgotten, deadlines are missed, and productivity becomes inconsistent. This project aims to address these challenges through a tool that is intuitive, secure, and supported by real-time data.
+
 **Purpose & Value**
+The primary purpose of TasksTrackr is to provide users with a simple yet powerful platform for managing tasks, visualising priority levels, and staying organised across all areas of life. Many existing task managers are either too complex for beginners or too limited for users who need meaningful oversight. This project fills that gap by combining ease of use with practical features such as category grouping, due-date tracking, and automated RAG (Red–Amber–Green) priority calculation based on real data.
+
 -  Provide an intuitive, role-aware task management solution.
 -  Support individual contributors, administrators, and superadmins.
 - Deliver rapid task entry, filtering, visual urgency indicators, and administrative controls (user management, category management, and global task oversight).
+  
+The system supports both everyday users and administrative roles. It delivers fast task entry, a clean interface, and a strong focus on clarity—allowing users to see exactly what needs attention the moment they log in.
 
 ## 2. UX / UI Design
 ###  User Goals
@@ -59,10 +65,13 @@ The backend logic is handled by Flask, persistent storage is managed via MongoDB
 </details>
 
 ### Target Audience
+
+- **Individuals**
+People managing household responsibilities, errands, personal projects, or general life tasks who need a central place to stay organised.
 - **Busy Professionals.**
 Individuals working in office environments, healthcare, IT, education, or customer-facing roles who manage multiple responsibilities and need a structured tool to stay on top of daily tasks.
 - **Students and Learners.**
-College, university, and online learners who must juggle lectures, assignments, deadlines, exams, and personal commitments.
+Learners balancing classes, assignments, revision deadlines, and personal commitments who require a clear structure to avoid missed work.
 - **Freelancers and Self-Employed Workers.**
 Designers, writers, developers, consultants, and gig workers who need to keep track of client projects, delivery dates, and personal workloads.
 - **Parents and Home Managers.**
@@ -155,6 +164,13 @@ Urgency is automatically computed from the due date using datetime logic. Output
 
   - Consider using ObjectId references for categories to enforce integrity.
 
+### Data and Information Considerations
+The application is built around a data-centric architecture, using MongoDB Atlas to store and manage:
+Users (authentication, roles, account status)
+Tasks (task name, description, due date, category, urgency)
+Categories (logical grouping of tasks)
+The data model enables fast retrieval, flexible querying, and clear relational mapping between users and their tasks. The automated RAG logic is entirely data-driven, relying on dates stored in the database to dynamically classify urgency levels. This ensures the interface reflects real-time task status without requiring user input beyond the due date.
+
 ## 5. Technologies Used
 - **Frontend:** HTML5, CSS3, Bootstrap 5, JavaScript.
 - **Backend:** Flask, Jinja2, Flask-PyMongo.
@@ -234,6 +250,40 @@ The website was tested on the following browsers:
 
 
 ## 8. Security Considerations
+Security is an essential part of the system’s design, especially when handling personal task information and account details. The following measures were implemented:
+
+**1. Secure Authentication**
+
+Passwords are never stored in plain text. The system uses Werkzeug’s industry-standard hashing to protect user credentials.
+
+**2. Session-Based Access Control**
+
+User sessions ensure that protected routes (e.g., tasks, admin features) are only accessible after login. Sessions are stored securely using a unique SECRET_KEY.
+
+**3. Role-Based Access Control (RBAC)**
+
+User actions are restricted based on roles:
+-  Standard users manage only their own tasks.
+-  Admins and superadmins gain elevated permissions to manage users, categories, and system governance.
+  
+This prevents unauthorised activity and enforces a strong permission boundary.
+
+**4. Account Protection**
+
+To reduce the risk of brute-force attacks:
+- Accounts are automatically frozen after three failed login attempts.
+- Admins can unfreeze accounts, ensuring accountability and oversight.
+  
+**5. Secure Database Handling**
+
+The MongoDB URI is stored in environment variables, never in the source code.
+
+This protects sensitive connection credentials and prevents accidental exposure in public repositories.
+
+**6. Data Validation**
+
+Server-side validation prevents malicious input, ensures task integrity, and reduces the risk of malformed or insecure data entries.
+
 - Passwords hashed (Werkzeug); sessions for auth.
 - Account freeze after 3 failed logins; superadmin can unfreeze.
 - Role-guarded routes (superadmin-only admin UI/actions).
