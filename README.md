@@ -359,35 +359,35 @@ After implementing these changes, the accordion behaved correctly, allowing only
 Updating the delete route to use delete_one() resolved the issue and aligned the project with current MongoDB best practices.
 
 ## What I Learned Along the Way
-1. The Importance of Understanding Version Changes.
+**1. The Importance of Understanding Version Changes.**
 
 One of the biggest lessons I learned was that documentation and tutorials quickly become outdated when libraries release new versions. Flask-PyMongo introduced breaking changes after version 3, which meant examples from MongoDB Atlas and online guides no longer matched the current implementation. This experience reinforced the value of always checking version-specific documentation and release notes rather than relying solely on older tutorials.
 
-2. Debugging Requires Methodical Investigation.
+**2. Debugging Requires Methodical Investigation.**
 
 The connection issue between Flask and MongoDB demonstrated the importance of patience and structured debugging. I learned to examine error messages closely, test assumptions one step at a time, validate environment variables, and isolate potential causes. Trial-and-error becomes productive only when paired with a deliberate method.
 
-3. Front-End Behaviour Depends on Proper Script Management.
+**3. Front-End Behaviour Depends on Proper Script Management.**
 
 The Bootstrap issue taught me that loading JavaScript incorrectly can break an entire interface. I learned the correct script order—HTML first, then JavaScript—and gained a clearer understanding of how event-driven components rely on proper initialisation. This knowledge is essential for building stable, responsive UIs.
 
-4. Unique Identifiers Are Critical for Interactive Components.
+**4. Unique Identifiers Are Critical for Interactive Components.**
 
 The accordion issue showed me how even small details, such as duplicated IDs, can completely disrupt functionality. I learned to generate dynamic, unique IDs using Jinja’s loop.index and to pay attention to ARIA attributes and Bootstrap’s required structure. Good UI behaviour relies on clean and predictable markup.
 
-5. Deprecated Code Can Lead to Silent Failures.
+**5. Deprecated Code Can Lead to Silent Failures.**
 
 The removal of MongoDB’s remove() method reinforced the need to recognise deprecated functions and adopt modern equivalents such as delete_one(). Staying updated with library changes prevents technical debt and ensures stability in production.
 
-6. Knowing When to Seek Help Is Part of Being a Developer.
+**6. Knowing When to Seek Help Is Part of Being a Developer.**
 
 Reaching out to a tutor was essential in resolving an issue that would have taken much longer on my own. This experience taught me that collaboration and asking for assistance are not signs of weakness—they are part of professional practice. Effective problem-solving often involves knowing when a fresh pair of eyes can help.
 
-7. Documentation and Official Sources Are Essential.
+**7. Documentation and Official Sources Are Essential.**
 
 When fixing Bootstrap and MongoDB issues, I learned that official documentation is often the fastest route to accurate solutions. Community forums are useful, but authoritative references provide reliable answers that match current versions.
 
-8. Small Errors Can Cause Major Issues.
+**8. Small Errors Can Cause Major Issues.**
 
 From missing symbols in a URI to duplicated IDs in an accordion, I learned that attention to detail is crucial. One misplaced character or duplicated attribute can break an entire feature. This reinforced the importance of careful reviewing, validation, and incremental testing.
 
