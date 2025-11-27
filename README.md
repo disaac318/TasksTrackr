@@ -11,9 +11,9 @@ TasksTrackr demonstrates secure, scalable data-centric development for Milestone
 
 ## Table of Contents
 1. Project Overview
-2. Project Goals
+2. UX / UI Design
 3. Technical Architecture
-4. UX / UI Design
+4. 
 5. Features
 6. Data Model
 7. Folder Structure
@@ -33,7 +33,7 @@ TasksTrackr™ organizes personal and professional work with CRUD task managemen
 - Fast task entry/filtering plus dynamic RAG logic and admin oversight.
 
 ## 2. UX / UI Design
- ### Project goals: demonstrate full-stack CRUD, secure auth/sessions, and data-driven RAG logic in a clean, accessible UI.
+ ## Project goals: demonstrate full-stack CRUD, secure auth/sessions, and data-driven RAG logic in a clean, accessible UI.
 
 - Responsive Bootstrap 5 grid.
 - Category badges and RAG labels.
@@ -53,30 +53,30 @@ TasksTrackr™ organizes personal and professional work with CRUD task managemen
 
 ### 🎯 User Goals
 - To manage tasks quickly, see urgency at a glance, use across devices. 
-- To stay organised and avoid forgetting important tasks.- 
-Users want a reliable tool that prevents things from slipping through the cracks.
-- To prioritise work more effectively
+- To stay organised and avoid forgetting important tasks.
+  Users want a reliable tool that prevents things from slipping through the cracks.
+- To prioritise work more effectively.
 The RAG status helps users understand what needs immediate attention and what can wait.
-- To manage multiple responsibilities in one place
+- To manage multiple responsibilities in one place.
 Users prefer consolidating personal, work, and project tasks into a single, structured system.
-- To improve productivity and reduce wasted time
+- To improve productivity and reduce wasted time.
 A clear task list helps users plan their day efficiently and complete tasks faster.
-- To keep track of deadlines
+- To keep track of deadlines.
 Users want to see upcoming due dates clearly so they can plan ahead and avoid last-minute pressure.
 - To see progress and maintain motivation
 Checking off tasks provides a sense of accomplishment and encourages continued productivity.
-- To adapt quickly when plans change
+- To adapt quickly when plans change.
 Users need a tool that allows easy editing, re-prioritisation, and re-organisation whenever circumstances shift.
-- To access tasks anytime, anywhere
+- To access tasks anytime, anywhere.
 A responsive, cross-device interface ensures users can manage their obligations on the go.
 
 
 ### 🧑‍💼 Site Owner’s Goals
 - Deliver a reliable and secure task-tracking platform. 
 Ensure the system operates smoothly, protects user data, and maintains stable performance across all core features.
-- Demonstrate full-stack technical competency
+- Demonstrate full-stack technical competency.
 Showcase practical implementation of CRUD operations, authentication, session management, database modeling, and role-based access control.
-- Create an intuitive and accessible user experience
+- Create an intuitive and accessible user experience.
 Provide a clean, responsive interface that lowers user friction, enhances usability, and supports accessibility principles.
 - Support meaningful oversight and governance.
 Enable admins and superadmins to manage users, monitor activity, enforce rules, and maintain the system’s integrity.
@@ -148,7 +148,7 @@ Frontend
 ```
 
 
-## 5. Features
+## 4. Features
 **User Authentication**
 - Registration, login, logout.
 - Password hashing; freeze after 3 failed logins.
@@ -171,7 +171,7 @@ Frontend
 - Dark mode; configurable RAG thresholds.
 - API endpoints/mobile integration.
 
-## 6. Data Model (MongoDB)
+## 5. Data Model (MongoDB)
 **users**
 ```json
 {
@@ -202,7 +202,7 @@ Frontend
 
 Relationships are implicit via `created_by` and `category_name`. For production, add indexes on `users.username`, `tasks.created_by`/`due_date`, and `categories.category_name`; optionally store category ObjectIds for stricter integrity.
 
-## 7. Folder Structure
+## 6. Folder Structure
 ```
 TasksTrackr/
 ├── app.py
@@ -227,20 +227,20 @@ TasksTrackr/
     └── admin_categories.html
 ```
 
-## 8. Technologies Used
+## 7. Technologies Used
 - **Frontend:** HTML5, CSS3, Bootstrap 5, JavaScript.
 - **Backend:** Flask, Jinja2, Flask-PyMongo.
 - **Database:** MongoDB Atlas.
 - **Other:** Werkzeug (password hashing), Git/GitHub, Heroku/Render (deployment target).
 
-## 9. Security Considerations
+## 8. Security Considerations
 - Passwords hashed (Werkzeug); sessions for auth.
 - Account freeze after 3 failed logins; superadmin can unfreeze.
 - Role-guarded routes (superadmin-only admin UI/actions).
 - Reset tokens with 1-hour expiry (link flashed; no email transport in this build).
 - Delete guarded: owner/superadmin; admin view delete for any task.
 
-## 10. Testing
+## 9. Testing
 - Manual test plan in `TESTING.md` (auth, tasks, admin, responsiveness, accessibility, data integrity).
 - Commands: `python3 -m py_compile app.py` (syntax), `flake8 app.py` (style if available).
 - Validate HTML/CSS via W3C after deployment.
@@ -352,7 +352,7 @@ When fixing Bootstrap and MongoDB issues, I learned that official documentation 
 From missing symbols in a URI to duplicated IDs in an accordion, I learned that attention to detail is crucial. One misplaced character or duplicated attribute can break an entire feature. This reinforced the importance of careful reviewing, validation, and incremental testing.
 
 
-## 11. Deployment
+## 10. Deployment
 1) **Prerequisites:** Python 3.x, pip/virtualenv; MongoDB URI.  
 2) **Install deps:**
    ```bash
@@ -364,14 +364,14 @@ From missing symbols in a URI to duplicated IDs in an accordion, I learned that 
 4) **Run:** `python3 app.py` (debug=False by default).  
 5) **Superadmin:** set `role: "superadmin"` (and `is_frozen: false`, `failed_logins: 0`) on a user in Mongo, then use Admin UI.
 
-## 12. Future Improvements
+## 11. Future Improvements
 - Email/SMS reminders; notifications.
 - Enforce task edit ownership (delete already does).
 - Indexes/schema validation in Mongo.
 - Automated tests and accessibility validations.
 - Recurring tasks, calendar integration, configurable RAG thresholds.
 
-## 13. Credits
+## 12. Credits
 - Flaticon for the landing page image.
 - Flask, Flask-PyMongo, MongoDB, Bootstrap, Werkzeug.
 - Code Institute for project framework guidance.
