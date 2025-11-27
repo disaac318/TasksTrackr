@@ -28,6 +28,7 @@ The backend logic is handled by Flask, persistent storage is managed via MongoDB
 The development of TasksTrackr is driven by the need for a clear, practical, and data-centred solution that helps users organise their daily responsibilities in an efficient and accessible way. In modern working and learning environments, individuals frequently manage multiple priorities across both personal and professional domains. Without a structured system, tasks are easily forgotten, deadlines are missed, and productivity becomes inconsistent. This project aims to address these challenges through a tool that is intuitive, secure, and supported by real-time data.
 
 **Purpose & Value**
+
 The primary purpose of TasksTrackr is to provide users with a simple yet powerful platform for managing tasks, visualising priority levels, and staying organised across all areas of life. Many existing task managers are either too complex for beginners or too limited for users who need meaningful oversight. This project fills that gap by combining ease of use with practical features such as category grouping, due-date tracking, and automated RAG (Red–Amber–Green) priority calculation based on real data.
 
 -  Provide an intuitive, role-aware task management solution.
@@ -105,7 +106,7 @@ Users who enjoy structured, digital task management rather than paper planners, 
 **User Authentication**
 - Registration, login, logout.
 - Password hashing; freeze after 3 failed logins.
-- Password reset tokens (shown on request for demo).
+- Password reset tokens.
 - Session-based access control.
 
 **Task Management (CRUD)**
@@ -118,6 +119,7 @@ Users who enjoy structured, digital task management rather than paper planners, 
 Owner-controlled editing; deletion allowed by owner or superadmin.
 
 **RAG Status System**
+
 Urgency is automatically computed from the due date using datetime logic. Output dynamically updates within the UI.
 
 **Admin / Superadmin Features**
