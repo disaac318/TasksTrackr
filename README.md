@@ -1,9 +1,6 @@
 # TasksTrackr – Milestone Project 3 (Data-Centric Development)
 
-TasksTrackr is a full-stack, data-centric task manager built with Flask, MongoDB, HTML, CSS, Bootstrap 5, and JavaScript. It lets users manage tasks, monitor deadlines, and see urgency via an automated RAG (Red–Amber–Green) system. Superadmins govern users, tasks, and categories through RBAC.
-
-## Executive Summary
-TasksTrackr demonstrates secure, scalable data-centric development for Milestone Project 3. Flask powers the backend, MongoDB Atlas stores data, and Bootstrap 5 delivers a responsive UI. RAG logic is derived from due dates; authentication uses hashing, session management, and account-freeze protection. Superadmins can adjust roles, freeze/unfreeze accounts, manage categories, and oversee all tasks. The architecture is modular and ready for enhancements like recurring tasks, calendar integration, and email/SMS reminders.
+TasksTrackr is a full-stack, data-centric task management web application built with Flask, MongoDB, HTML, CSS, Bootstrap 5, and JavaScript. The system enables users to manage tasks, monitor deadlines, and identify urgency using a RAG (Red–Amber–Green) priority model. Superadmins can administer users, categories, and tasks through a role-based access control (RBAC) structure.
 
 ![Mockup image](docs/wireFrame/responsiveMockUp%20copy.jpg)
 
@@ -12,34 +9,41 @@ TasksTrackr demonstrates secure, scalable data-centric development for Milestone
 ## Table of Contents
 1. Project Overview
 2. UX / UI Design
-3. Technical Architecture
-4. 
-5. Features
-6. Data Model
-7. Folder Structure
-8. Technologies Used
-9. Security Considerations
-10. Testing
-11. Deployment
-12. Future Improvements
-13. Credits
+3. Features
+4. Data Model
+5. Technologies Used
+6. Testing
+7. Deployment
+8. Future Improvements
+9.  Credits
 
 ## 1. Project Overview
-TasksTrackr™ organizes personal and professional work with CRUD task management and a dynamic RAG indicator based on due dates. Flask handles routing and logic; MongoDB persists users/tasks/categories; Bootstrap/Jinja2 render a responsive interface; session protection secures routes.
+TasksTrackr is a data-driven productivity platform designed to organise personal and professional workloads. Users can create, update, delete, and filter tasks, while the system dynamically calculates urgency using a RAG traffic-light model derived from each task’s due date.
+
+The backend logic is handled by Flask, persistent storage is managed via MongoDB Atlas, the interface is delivered using Bootstrap 5, and user authentication is secured through Flask sessions and password hashing.
 
 **Purpose & Value**
-- Role-aware, secure task tracking.
-- Supports users and superadmins with governance capabilities.
-- Fast task entry/filtering plus dynamic RAG logic and admin oversight.
+-  Provide an intuitive, role-aware task management solution.
+-  Support individual contributors, administrators, and superadmins.
+- Deliver rapid task entry, filtering, visual urgency indicators, and administrative controls (user management, category management, and global task oversight).
 
 ## 2. UX / UI Design
- ## Project goals: demonstrate full-stack CRUD, secure auth/sessions, and data-driven RAG logic in a clean, accessible UI.
+###  User Goals
+- Create and manage tasks with minimal friction.
+- View deadlines and priorities at a glance.
+- Access the system across devices using a responsive interface.
 
-- Responsive Bootstrap 5 grid.
-- Category badges and RAG labels.
-- Accordion-based task listing.
-- Mobile-friendly navigation/forms. 
-  
+
+###  Project Goals
+- Demonstrate full-stack CRUD functionality.
+- Implement secure authentication and session management.
+- Showcase data-dependent RAG calculations.
+
+###  Design Features
+- Responsive Bootstrap 5 layout supporting desktop, tablet, and mobile.
+- Colour-coded category badges and dynamic RAG labels.
+- Minimalist dashboard with accordion-based task display.
+
 ### Wireframes
 <details><summary>Desktop</summary>
 <img src="./docs/wireFrame/wireFrame_desktop-01.webp">
@@ -51,56 +55,20 @@ TasksTrackr™ organizes personal and professional work with CRUD task managemen
 <img src="./docs/wireFrame/wireFrame_phone.webp">
 </details>
 
-### 🎯 User Goals
-- To manage tasks quickly, see urgency at a glance, use across devices. 
-- To stay organised and avoid forgetting important tasks.
-  Users want a reliable tool that prevents things from slipping through the cracks.
-- To prioritise work more effectively.
-The RAG status helps users understand what needs immediate attention and what can wait.
-- To manage multiple responsibilities in one place.
-Users prefer consolidating personal, work, and project tasks into a single, structured system.
-- To improve productivity and reduce wasted time.
-A clear task list helps users plan their day efficiently and complete tasks faster.
-- To keep track of deadlines.
-Users want to see upcoming due dates clearly so they can plan ahead and avoid last-minute pressure.
-- To see progress and maintain motivation
-Checking off tasks provides a sense of accomplishment and encourages continued productivity.
-- To adapt quickly when plans change.
-Users need a tool that allows easy editing, re-prioritisation, and re-organisation whenever circumstances shift.
-- To access tasks anytime, anywhere.
-A responsive, cross-device interface ensures users can manage their obligations on the go.
-
-
-### 🧑‍💼 Site Owner’s Goals
-- Deliver a reliable and secure task-tracking platform. 
-Ensure the system operates smoothly, protects user data, and maintains stable performance across all core features.
-- Demonstrate full-stack technical competency.
-Showcase practical implementation of CRUD operations, authentication, session management, database modeling, and role-based access control.
-- Create an intuitive and accessible user experience.
-Provide a clean, responsive interface that lowers user friction, enhances usability, and supports accessibility principles.
-- Support meaningful oversight and governance.
-Enable admins and superadmins to manage users, monitor activity, enforce rules, and maintain the system’s integrity.
-- Maintain scalable and maintainable code architecture.
-Structure the project to support future enhancements, including new features, improved logic, and integration with external services.
-- Use data effectively to drive system logic.
-Apply due-date calculations, RAG priority rules, and category structures to deliver an intelligent, data-centric experience.
-- Deploy a trustworthy, production-ready application.
-Ensure the project can be hosted securely (Heroku/Render/MongoDB Atlas), with clear documentation for installation and maintenance.
-
-### 🎯 Target Audience
-- Busy Professionals.
+### Target Audience
+- **Busy Professionals.**
 Individuals working in office environments, healthcare, IT, education, or customer-facing roles who manage multiple responsibilities and need a structured tool to stay on top of daily tasks.
-- Students and Learners.
+- **Students and Learners.**
 College, university, and online learners who must juggle lectures, assignments, deadlines, exams, and personal commitments.
-- Freelancers and Self-Employed Workers.
+- **Freelancers and Self-Employed Workers.**
 Designers, writers, developers, consultants, and gig workers who need to keep track of client projects, delivery dates, and personal workloads.
-- Parents and Home Managers.
+- **Parents and Home Managers.**
 Individuals managing family schedules, home tasks, appointments, bills, and personal activities who benefit from a simple, centralised system.
-- Small Teams or Community Groups.
+- **Small Teams or Community Groups.**
 Small organisations, clubs, volunteer groups, or project teams that need to coordinate tasks, deadlines, and responsibilities.
-- Individuals with Organisation or Time-Management Challenges.
+- **Individuals with Organisation or Time-Management Challenges.**
 People who struggle with planning, remembering deadlines, or staying focused and benefit from clear visual cues like RAG priority indicators.
-- People Who Prefer Digital Productivity Tools.
+- **People Who Prefer Digital Productivity Tools.**
 Users who enjoy structured, digital task management rather than paper planners, sticky notes, or unorganised spreadsheets.
 
 
@@ -121,34 +89,7 @@ Users who enjoy structured, digital task management rather than paper planners, 
 
 
 
-## 3. Technical Architecture
-```
-End User (browser)
-    |
-    |  HTTPS
-    v
-Flask App (app.py)
-  - Routing, auth, sessions
-  - CRUD controllers
-  - RAG computation
-    |
-    | Jinja2 templates / Flask-PyMongo
-    v
-MongoDB Atlas
-  - users
-  - tasks
-  - categories
-    ^
-    | data rendered to templates
-    v
-Frontend
-  - HTML5/Jinja2
-  - CSS/Bootstrap 5
-  - JS (flash handling)
-```
-
-
-## 4. Features
+## 3. Features
 **User Authentication**
 - Registration, login, logout.
 - Password hashing; freeze after 3 failed logins.
@@ -158,111 +99,98 @@ Frontend
 **Task Management (CRUD)**
 - Create, edit, delete tasks.
 - Filter tasks by category.
-- Ownership checks on delete (owner or superadmin).
-- RAG highlighting: red (due/overdue), amber (≤2 days), green (3+ days).
+- RAG-based urgency highlighting:
+  - Green: ≥3 days remaining
+  - Amber: <48 hours
+  - Red: Due or overdue
+Owner-controlled editing; deletion allowed by owner or superadmin.
 
-**Admin / Superadmin**
-- Admins: freeze/unfreeze accounts (not superadmins/self); view and delete any task with owner filter; manage categories (add; delete blocked if in use).
-- Superadmins: all admin powers plus promote/demote users and delete users (not self/other superadmins) along with their tasks.
+**RAG Status System**
+Urgency is automatically computed from the due date using datetime logic. Output dynamically updates within the UI.
+
+**Admin / Superadmin Features**
+- Promote/demote users.
+- Freeze/unfreeze accounts; view failed login attempts.
+- Delete any user or task (except self/superadmins).
+- Create categories; deletion restricted if in use.
+- System-wide visibility of all tasks.
 
 **Planned Enhancements**
-- Email/SMS reminders.
-- Calendar integration; recurring tasks.
-- Dark mode; configurable RAG thresholds.
-- API endpoints/mobile integration.
+- Email reminders for overdue tasks.
+- Calendar integration and recurring tasks.
+- Drag-and-drop UX improvements; dark mode.
+- Mobile-ready API endpoints.
+- Customisable RAG thresholds per user.
 
 ## 5. Data Model (MongoDB)
+**Collections & Key Fields**
+
 **users**
-```json
-{
-  "username": "alice",
-  "password": "<hashed>",
-  "role": "superadmin",
-  "is_frozen": false,
-  "failed_logins": 0,
-  "reset_token": "<token>",
-  "reset_expires": "<datetime>"
-}
-```
+- username (string, lowercase, unique)
+- password (hashed)
+- role (user | admin | superadmin)
+- is_frozen (bool)
+- failed_logins (int)
+- reset_token (string)
+- reset_expires (datetime)
+
 **tasks**
-```json
-{
-  "task_name": "Buy groceries",
-  "task_description": "Milk, eggs, bread",
-  "category_name": "Shopping",
-  "is_urgent": "on",
-  "due_date": "2025-01-20",
-  "created_by": "alice"
-}
-```
+- task_name (string)
+- task_description (string)
+- category_name (string)
+- is_urgent ("on"/"off")
+- due_date (YYYY-MM-DD string)
+- created_by (string username)
+
 **categories**
-```json
-{ "category_name": "Shopping" }
-```
+- category_name (string, unique recommended)
 
-Relationships are implicit via `created_by` and `category_name`. For production, add indexes on `users.username`, `tasks.created_by`/`due_date`, and `categories.category_name`; optionally store category ObjectIds for stricter integrity.
+**Notes**
+- Relationships are maintained via string references.
+- For production:
+  - Add indexes on usernames, categories, due_date, and created_by.
 
-## 6. Folder Structure
-```
-TasksTrackr/
-├── app.py
-├── requirements.txt
-├── README.md
-├── TESTING.md
-├── env.py (optional, local vars)
-├── static/
-│   ├── css/style.css
-│   ├── js/flash-alerts.js
-│   └── img/clipboard.png
-└── templates/
-    ├── base.html
-    ├── welcome.html
-    ├── login.html
-    ├── register.html
-    ├── add_task.html
-    ├── edit_task.html
-    ├── my_tasks.html
-    ├── admin_users.html
-    ├── admin_tasks.html
-    └── admin_categories.html
-```
+  - Consider using ObjectId references for categories to enforce integrity.
 
-## 7. Technologies Used
+## 5. Technologies Used
 - **Frontend:** HTML5, CSS3, Bootstrap 5, JavaScript.
 - **Backend:** Flask, Jinja2, Flask-PyMongo.
 - **Database:** MongoDB Atlas.
-- **Other:** Werkzeug (password hashing), Git/GitHub, Heroku/Render (deployment target).
+- **Other:** Werkzeug (password hashing), Git/GitHub, Heroku (deployment target).
 
-## 8. Security Considerations
-- Passwords hashed (Werkzeug); sessions for auth.
-- Account freeze after 3 failed logins; superadmin can unfreeze.
-- Role-guarded routes (superadmin-only admin UI/actions).
-- Reset tokens with 1-hour expiry (link flashed; no email transport in this build).
-- Delete guarded: owner/superadmin; admin view delete for any task.
+## 6. Testing
+A detailed manual test plan is provided in TESTING.md, covering:
+- Authentication flows
+- CRUD functionality
+- RAG status logic
+- Admin governance functions
+- Responsive design
+- Accessibility checks
+- Data integrity (MongoDB operations)
 
-## 9. Testing
-- Manual test plan in `TESTING.md` (auth, tasks, admin, responsiveness, accessibility, data integrity).
-- Commands: `python3 -m py_compile app.py` (syntax), `flake8 app.py` (style if available).
-- Validate HTML/CSS via W3C after deployment.
-### HTML Validation
+## Additional validations:
+
+### HTML Validation tested with W3C validators
 <details><summary>HTML</summary>
 <img src="./docs/validation/html validation.png">
 </details>
 
-### CSS Validation
+### CSS Validation tested with W3C validators
 <details><summary>style.css</summary>
 <img src="./docs/validation/css validation.png">
 </details>
 
+Python code syntax validated via:
+    - python3 -m py_compile app.py
+flake8 app.py
+
 ### Performance
 Google Lighthouse in Google Chrome Developer Tools was used to test the performance of the website.
-
 <details><summary>Performance Test on Lighthouse</summary>
 <img src="./docs/validation/lightHouse.png">
 </details>
 
 ###  Performing tests on various devices
-
 The website was tested on the following devices:
 
 -  Imac 24-inch M1 2021
@@ -272,16 +200,65 @@ The website was tested on the following devices:
 In addition, the website was tested using Google Chrome Developer Tools Device Toggeling option for all available device options.
 
 ### Browser compatibility
-
 The website was tested on the following browsers:
-
 -  Safari
 -  Google Chrome
 -  Mozilla Firefox
 -  Microsoft Edge
   
+## 7. Deployment
+- Prerequisites
+- Python 3.x
+- pip and virtual environment tools
+- Valid MongoDB URI
+- Environment variables: MONGO_URI, SECRET_KEY, IP, PORT
 
-## Development Challenges and Resolutions
+**Installation**
+ - python3 -m venv .venv
+- source .venv/bin/activate
+- pip install -r requirements.txt
+
+**Running the Application**
+- python3 app.py
+
+  (Debug mode disabled by default; enable locally if required.)
+
+**Superadmin Configuration**
+- Set role and status fields manually in MongoDB:
+- role: "superadmin"
+- is_frozen: false
+- failed_logins: 0
+
+
+## 8. Security Considerations
+- Passwords hashed (Werkzeug); sessions for auth.
+- Account freeze after 3 failed logins; superadmin can unfreeze.
+- Role-guarded routes (superadmin-only admin UI/actions).
+- Reset tokens with 1-hour expiry (link flashed; no email transport in this build).
+- Delete guarded: owner/superadmin; admin view delete for any task.
+
+## 9. Deployment
+1) **Prerequisites:** Python 3.x, pip/virtualenv; MongoDB URI.  
+2) **Install deps:**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+3) **Env vars:** `MONGO_URI`, `SECRET_KEY`, `IP`, `PORT` (export or `.env`).  
+4) **Run:** `python3 app.py` (debug=False by default).  
+5) **Superadmin:** set `role: "superadmin"` (and `is_frozen: false`, `failed_logins: 0`) on a user in Mongo, then use Admin UI.
+
+## 10. Future Improvements
+- Email/SMS delivery for reset tokens and alerts.
+- Robust ownership enforcement on task editing.
+- Additional database indexes and schema validation.
+- Automated tests with coverage reporting.
+- Calendar/scheduler integration.
+- Recurring tasks and personalised RAG thresholds.
+
+
+## 11 Development Challenges and Resolutions
 ### Problem 1: Flask–MongoDB Connection Failure
 - The first and most significant challenge I encountered was establishing a reliable connection between Flask and MongoDB Atlas. I spent two days troubleshooting—searching social media posts, YouTube tutorials, and various online forums—but no solution worked.
 I eventually sought support from Code Institute’s tutoring service. Tom explained that Flask-PyMongo has changed substantially since version 3, and many online examples (including the connection string from MongoDB Atlas) no longer work without adjustments. After reviewing my configuration, he identified the issue within the connection URI and instructed me to modify it by replacing the deprecated parameter with  "&tlsAllowInvalidCertificates=true."
@@ -351,27 +328,8 @@ When fixing Bootstrap and MongoDB issues, I learned that official documentation 
 8. Small Errors Can Cause Major Issues
 From missing symbols in a URI to duplicated IDs in an accordion, I learned that attention to detail is crucial. One misplaced character or duplicated attribute can break an entire feature. This reinforced the importance of careful reviewing, validation, and incremental testing.
 
-
-## 10. Deployment
-1) **Prerequisites:** Python 3.x, pip/virtualenv; MongoDB URI.  
-2) **Install deps:**
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
-3) **Env vars:** `MONGO_URI`, `SECRET_KEY`, `IP`, `PORT` (export or `.env`).  
-4) **Run:** `python3 app.py` (debug=False by default).  
-5) **Superadmin:** set `role: "superadmin"` (and `is_frozen: false`, `failed_logins: 0`) on a user in Mongo, then use Admin UI.
-
-## 11. Future Improvements
-- Email/SMS reminders; notifications.
-- Enforce task edit ownership (delete already does).
-- Indexes/schema validation in Mongo.
-- Automated tests and accessibility validations.
-- Recurring tasks, calendar integration, configurable RAG thresholds.
-
 ## 12. Credits
 - Flaticon for the landing page image.
 - Flask, Flask-PyMongo, MongoDB, Bootstrap, Werkzeug.
+- Tutoring at Code Institute
 - Code Institute for project framework guidance.

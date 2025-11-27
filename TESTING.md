@@ -16,7 +16,6 @@ This document outlines manual checks to satisfy functionality, usability, respon
   - Dropdowns and accordions fit the viewport.
 
 ## Accessibility
-- Keyboard: Tab through navbar, forms, buttons; dropdowns and links reachable; accordion toggles focusable.
 - Labels: Ensure every input/select has a visible label (current forms use floating labels).
 - Contrast: Check primary text and buttons against WCAG AA using a contrast checker.
 - Screen reader hints: Verify meaningful link/button text (icons paired with text); flash alerts announce content.
