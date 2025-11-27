@@ -14,8 +14,11 @@ TasksTrackr is a full-stack, data-centric task management web application built 
 5. Technologies Used
 6. Testing
 7. Deployment
-8. Future Improvements
-9.  Credits
+8. Security Considerations
+9. Deployment
+10. Future Imrovements
+11. Development Challenges and Resolutions
+12. Credits
 
 ## 1. Project Overview
 TasksTrackr is a data-driven productivity platform designed to organise personal and professional workloads. Users can create, update, delete, and filter tasks, while the system dynamically calculates urgency using a RAG traffic-light model derived from each task’s due date.
@@ -122,7 +125,7 @@ Urgency is automatically computed from the due date using datetime logic. Output
 - Mobile-ready API endpoints.
 - Customisable RAG thresholds per user.
 
-## 5. Data Model (MongoDB)
+## 4. Data Model (MongoDB)
 **Collections & Key Fields**
 
 **users**
